@@ -1,0 +1,10 @@
+# CLI tool, only in development environment.
+# https://goframe.org/pages/viewpage.action?pageId=3673173
+gfcli:
+  gen:
+    dao:
+      - link: "pgsql:{{.DB.Username}}:{{.DB.Password}}@tcp({{.DB.Host}}:{{.DB.Port}})/{{.DB.Database}}"
+        path: "./internal"
+        tables:
+        descriptionTag:  true
+        noModelComment:  true

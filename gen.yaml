@@ -1,0 +1,26 @@
+# 应用名
+app: lanhu-magic
+# 项目框架
+frame: go-model
+# 外部模板路径
+template:
+# 输出路径
+output: /Users/quanchao/code/go/src/quanchao
+# 数据库配置
+db:
+  #  type: mysql
+  #  host: localhost
+  #  port: 3306
+  #  username: root
+  #  password: mysql123qc
+  #  database: quan_user
+  type: postgres
+  host: 172.19.14.206
+  port: 5432
+  username: postgres
+  password: lanhu_096b395eb969
+  database: magic
+  include: corp_company_setting,corp_process_task
+  exclude:
+  tablePrefix: corp_
+  tableSuffix:

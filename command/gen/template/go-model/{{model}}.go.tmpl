@@ -1,0 +1,11 @@
+// This file will be overwritten on re-execution.
+
+package sqlx_model
+
+{{if .HasTime}}import "time"{{else}}{{end}}
+
+type {{uc .Name}} struct {
+	{{- range $field := .Fields}}
+	{{$field.GoName}} {{$field.GoType}} `json:"{{lc $field.Name}}"` // {{$field.Comment}}
+	{{- end }}
+}

@@ -1,0 +1,16 @@
+package router
+
+import (
+	"github.com/gogf/gf/v2/net/ghttp"
+
+	"{{.App}}/internal/controller"
+)
+
+func BindController(group *ghttp.RouterGroup) {
+	group.Middleware(controller.BaseController{}.Response)
+	group.Bind(
+		{{- range $model := .Models}}
+		controller.{{uc $model.Name}}{},
+    	{{- end}}
+	)
+}

@@ -1,0 +1,16 @@
+// This file will be overwritten on re-execution.
+
+package do
+
+import (
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
+)
+
+// {{uc .Name}} is the golang structure of table {{.Name}} for DAO operations like Where/Data.
+type {{uc .Name}} struct {
+	g.Meta          `orm:"table:{{.Name}}, do:true"`
+	{{- range $field := .Fields }}
+	{{$field.GoName}} interface{} // {{$field.Comment}}
+	{{- end }}
+}

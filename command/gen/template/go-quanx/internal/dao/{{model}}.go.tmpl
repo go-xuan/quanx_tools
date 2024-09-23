@@ -1,0 +1,16 @@
+package dao
+
+import (
+	"github.com/go-xuan/quanx/server/gormx"
+
+	"{{.App}}/internal/model"
+	"{{.App}}/internal/model/entity"
+)
+
+// {{uc .Name}}List {{.Comment}}列表查询
+func {{uc .Name}}List() (result []*model.{{uc .Name}}, err error) {
+	if err = gormx.GetDB().Model(&entity.{{uc .Name}}{}).Order("id desc").Scan(&result).Error; err != nil {
+		return
+	}
+	return
+}

@@ -1,0 +1,30 @@
+// This file will be overwritten on re-execution.
+
+package sqlx_model
+
+import (
+	"strings"
+	{{if .HasTime}}"time"{{else}}{{end}}
+)
+
+type {{uc .Name}} struct {
+	{{- range $field := .Fields}}
+	{{$field.GoName}} {{$field.GoType}} `db:"{{$field.Name}}" json:"{{$field.Name}}"` // {{$field.Comment}}
+	{{- end }}
+}
+
+func (t *{{uc .Name}}) TableName() string {
+	return "{{.Table}}"
+}
+
+func (t *{{uc .Name}}) Fields() []string {
+	return []string{
+		{{- range $field := .Fields}}
+		"{{$field.Name}}",
+    	{{- end }}
+	}
+}
+
+func (t *{{uc .Name}}) Select() string {
+	return "select " + strings.Join(t.Fields(), ", ") + " from " + t.TableName()
+}

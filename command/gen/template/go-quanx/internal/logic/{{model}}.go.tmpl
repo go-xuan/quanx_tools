@@ -1,0 +1,13 @@
+package logic
+
+import (
+	"github.com/gin-gonic/gin"
+
+	"{{.App}}/internal/model"
+)
+
+// {{uc .Name}}Demo {{.Comment}}Demo逻辑
+func {{uc .Name}}Demo(ctx *gin.Context, req *model.{{uc .Name}}DemoReq) (*model.{{uc .Name}}DemoResp, error) {
+	// todo 业务逻辑实现
+	return &model.{{uc .Name}}DemoResp{}, nil
+}

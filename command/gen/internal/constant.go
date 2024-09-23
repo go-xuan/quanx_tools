@@ -1,0 +1,137 @@
+package internal
+
+const (
+	// OverwriteTag header
+	OverwriteTag = "// This file will be overwritten on re-execution."
+	TemplateDir  = "template"
+	// EmptyData DataType
+	EmptyData     = "empty"     // 空代码文件
+	ModelData     = "model"     // 基于单个模型（表结构）生成代码
+	GeneratorData = "generator" // 基于“代码生成器”配置数据生成代码
+)
+
+// 随机数生成器-数据类型
+const (
+	// String go
+	String  = "string"
+	Int     = "int"
+	Int64   = "int64"
+	Float64 = "float64"
+	Bool    = "bool"
+	Time    = "time.Time"
+
+	// Date database
+	Date      = "date"
+	Varchar   = "varchar"
+	Char      = "char"
+	Text      = "text"
+	Int2      = "int2"
+	Int4      = "int4"
+	Int8      = "int8"
+	Tinyint   = "tinyint"
+	Smallint  = "smallint"
+	Mediumint = "mediumint"
+	Bigint    = "bigint"
+	Float4    = "float4"
+	Numeric   = "numeric" // 数字
+	Numeric2  = "numeric(10,2)"
+	Decimal   = "decimal"
+	Timestamp = "timestamp"
+	Datetime  = "datetime"
+
+	// JavaString java
+	JavaString     = "String"
+	JavaInteger    = "Integer"
+	JavaInt        = "int"
+	JavaLong       = "Long"
+	JavaDate       = "Date"
+	JavaBigDecimal = "BigDecimal"
+	JavaFloat      = "Float"
+	JavaBoolean    = "Boolean"
+)
+
+// IsBaseField BASE基础字段映射
+func IsBaseField(t string) bool {
+	switch t {
+	case "id":
+		return true
+	case "create_time", "create_user_id", "create_by":
+		return true
+	case "update_time", "update_user_id", "update_by":
+		return true
+	default:
+		return false
+	}
+}
+
+// DB2JavaType DB-java类型映射
+func DB2JavaType(t string) string {
+	switch t {
+	case Char, Varchar, Text:
+		return JavaString
+	case Int2, Smallint, Mediumint:
+		return JavaInteger
+	case Tinyint:
+		return JavaInt
+	case Int, Int4, Int8, Bigint:
+		return JavaLong
+	case Float4, Numeric:
+		return JavaFloat
+	case Decimal:
+		return JavaBigDecimal
+	case Timestamp, Datetime, Date:
+		return JavaDate
+	case Bool:
+		return JavaBoolean
+	default:
+		return JavaString
+	}
+}
+
+// DB2GoType DB-Go类型映射
+func DB2GoType(t string) string {
+	switch t {
+	case Char, Varchar, Text:
+		return String
+	case Int, Int2, Int4, Tinyint, Smallint, Mediumint:
+		return Int
+	case Int8, Bigint:
+		return Int64
+	case Float4, Numeric:
+		return Float64
+	case Timestamp, Datetime, Date:
+		return Time
+	case Bool:
+		return Bool
+	default:
+		return String
+	}
+}
+
+// DB2GormType DB-Gorm类型映射
+func DB2GormType(t string) string {
+	switch t {
+	case Char:
+		return Char
+	case Text:
+		return Text
+	case Tinyint:
+		return Tinyint
+	case Smallint, Int2:
+		return Smallint
+	case Mediumint, Int4, Int:
+		return Int
+	case Bigint, Int8:
+		return Bigint
+	case Float4, Numeric:
+		return Numeric2
+	case Timestamp, Datetime:
+		return Timestamp
+	case Bool:
+		return Bool
+	case Date:
+		return Date
+	default:
+		return t
+	}
+}

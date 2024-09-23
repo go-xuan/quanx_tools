@@ -1,0 +1,15 @@
+// This file will be overwritten on re-execution.
+
+package model
+
+{{if .HasTime}}import "time"{{else}}{{end}}
+
+type {{uc .Name}}DemoReq struct{}
+
+type {{uc .Name}}DemoResp struct{}
+
+type {{uc .Name}} struct {
+	{{- range $field := .Fields}}
+	{{$field.GoName}} {{$field.GoType}} `json:"{{lc $field.Name}}" comment:"{{$field.Comment}}"`
+	{{- end }}
+}
