@@ -1,9 +1,9 @@
 package dao
 
 import (
-	"github.com/go-xuan/quanx/core/configx"
 	"strings"
 
+	"github.com/go-xuan/quanx/core/configx"
 	"github.com/go-xuan/quanx/core/gormx"
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/types/stringx"
@@ -52,7 +52,7 @@ func TableQuery(source string, table string) (*model.TableQuery, error) {
 
 // SqlExec 执行sql
 func SqlExec(name, sql string) (err error) {
-	if err = gormx.GetDB(name).Exec(sql).Error; err != nil {
+	if err = gormx.DB(name).Exec(sql).Error; err != nil {
 		return errorx.Wrap(err, "执行sql失败")
 	}
 	return
@@ -83,7 +83,7 @@ func GetDBFieldDataList(args string) ([]string, error) {
 	sb.WriteString(params["table"])
 	sb.WriteString(" limit 100")
 	var result []string
-	if err := gormx.GetDB().Raw(sb.String()).Scan(&result).Error; err != nil {
+	if err := gormx.DB().Raw(sb.String()).Scan(&result).Error; err != nil {
 		return nil, errorx.Wrap(err, "查询sql失败")
 	}
 	return result, nil

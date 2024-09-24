@@ -27,7 +27,7 @@ select table_catalog as database,
 	}
 	sql.WriteString(` group by table_catalog, table_schema, table_name order by table_name `)
 	var result []*model.TableQuery
-	if err := gormx.GetDB(source).Raw(sql.String(), database, schema).Scan(&result).Error; err != nil {
+	if err := gormx.DB(source).Raw(sql.String(), database, schema).Scan(&result).Error; err != nil {
 		return nil, errorx.Wrap(err, "查询表列表失败")
 	}
 	return result, nil
@@ -52,7 +52,7 @@ select table_catalog as database,
 	}
 	sql.WriteString(` group by table_catalog, table_schema, table_name order by table_name `)
 	var result *model.TableQuery
-	if err := gormx.GetDB(source).Raw(sql.String(), database, schema).Scan(result).Error; err != nil {
+	if err := gormx.DB(source).Raw(sql.String(), database, schema).Scan(result).Error; err != nil {
 		return nil, errorx.Wrap(err, "查询表基本信息失败")
 	}
 	return result, nil
@@ -94,7 +94,7 @@ select t1.column_name as name,
 	sql.WriteString(` order by t1.table_schema, t1.table_name, t1.ordinal_position`)
 
 	var result []*model.TableField
-	if err := gormx.GetDB(source).Raw(sql.String()).Scan(&result).Error; err != nil {
+	if err := gormx.DB(source).Raw(sql.String()).Scan(&result).Error; err != nil {
 		return nil, errorx.Wrap(err, "查询表字段列表失败")
 	}
 	return result, nil

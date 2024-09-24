@@ -127,7 +127,7 @@ func (db *DB) GetModelsFromDB(app string) ([]*Model, error) {
 		return nil, errorx.New("gormDB.type can only be mysql or postgres")
 	}
 	var fields []*Field
-	if err := gormx.GetDB().Raw(sql).Scan(&fields).Error; err != nil {
+	if err := gormx.DB().Raw(sql).Scan(&fields).Error; err != nil {
 		return nil, errorx.Wrap(err, "查询表字段列表失败")
 	}
 	if len(fields) > 0 {
