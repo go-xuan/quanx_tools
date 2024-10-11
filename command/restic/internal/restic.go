@@ -10,7 +10,7 @@ import (
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/os/execx"
 	"github.com/go-xuan/quanx/os/filex"
-	"github.com/go-xuan/quanx/utils/fmtx"
+	"github.com/go-xuan/quanx/os/fmtx"
 	log "github.com/sirupsen/logrus"
 )
 

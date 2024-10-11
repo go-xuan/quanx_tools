@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/os/flagx"
+	"github.com/go-xuan/quanx/os/fmtx"
 	"github.com/go-xuan/quanx/types/slicex"
-	"github.com/go-xuan/quanx/utils/fmtx"
 	"github.com/go-xuan/quanx/utils/randx"
 
 	"quanx_tools/command"
@@ -20,9 +20,9 @@ var Command *flagx.Command
 
 func init() {
 	Command = flagx.NewCommand(command.Rand, "随机数生成器",
-		flagx.StringOption("type", "数据类型", ""),
-		flagx.StringOption("args", "约束参数", ""),
+		flagx.StringOption("type", "数据类型", "string"),
 		flagx.IntOption("size", "生成数量", 1),
+		flagx.StringOption("args", "约束参数", ""),
 		flagx.StringOption("default", "默认值", ""),
 		flagx.BoolOption("copy", "复制粘贴", false),
 	).SetHandler(handler)
@@ -33,14 +33,15 @@ func handler() error {
 	randType := Command.GetOptionValue("type").String()
 	args := Command.GetOptionValue("args").String()
 	if randType == "" && args == "" {
+		fmtx.Cyan.XPrintf("执行%s命令时，参数不能为空！", command.Rand)
 		Command.Help()
 		return nil
 	}
-	if randType == "explain" || !slicex.Contains(enums.RandTypeExplain.Keys(), randType) {
-		fmt.Println(`type参数可用于约束随机值的类型，以下是可支持的type类型：`)
-		for _, k := range enums.RandTypeExplain.Keys() {
-			fmt.Printf("%-30s %s\n", fmtx.Green.String(k), enums.RandTypeExplain.Get(k))
-		}
+
+	if !slicex.Contains(enums.RandTypeExplain.Keys(), randType) {
+		fmtx.Red.XPrintf("当前输入的 %s 不可用！", "-type="+randType)
+		fmtx.Magenta.XPrintf("以下是可用的%s参数值：\n", "-type")
+		enums.Print(fmtx.Green, enums.RandTypeExplain)
 		return nil
 	}
 
@@ -49,18 +50,15 @@ func handler() error {
 			fmtx.Magenta.XPrintf("当-type=%s时，args参数不能为空", randType)
 			fmt.Println("\nargs参数示例：")
 			fmt.Println(enums.RequiredArgsExamples.Get(randType))
+
 			fmt.Println("\nargs参数说明：")
-			for _, key := range enum.Keys() {
-				fmt.Printf("%s: %s\n", fmtx.Green.String(key), enum.Get(key))
-			}
+			enums.Print(fmtx.Green, enum)
 			return nil
 		}
 	} else if args == "explain" {
 		Command.Help()
 		fmtx.Red.Println(`args参数可用于约束随机值的生成条件，参数格式为-args="key=value&key=value"`)
-		for _, k := range enums.RandArgsExplain.Keys() {
-			fmt.Printf("%-30s %s\n", fmtx.Green.String(k), enums.RandArgsExplain.Get(k))
-		}
+		enums.Print(fmtx.Green, enums.RandArgsExplain)
 		return nil
 	}
 

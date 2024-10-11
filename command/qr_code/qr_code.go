@@ -7,7 +7,7 @@ import (
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/os/filex"
 	"github.com/go-xuan/quanx/os/flagx"
-	"github.com/go-xuan/quanx/utils/fmtx"
+	"github.com/go-xuan/quanx/os/fmtx"
 	"github.com/go-xuan/quanx/utils/idx"
 	"github.com/go-xuan/quanx/utils/treex"
 	"github.com/skip2/go-qrcode"

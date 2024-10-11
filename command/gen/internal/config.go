@@ -9,8 +9,8 @@ import (
 	"github.com/go-xuan/quanx/core/gormx"
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/os/filex"
+	"github.com/go-xuan/quanx/os/fmtx"
 	"github.com/go-xuan/quanx/types/stringx"
-	"github.com/go-xuan/quanx/utils/fmtx"
 
 	embedTemplate "quanx_tools/command/gen/template"
 )

@@ -7,10 +7,10 @@ import (
 
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/os/flagx"
+	"github.com/go-xuan/quanx/os/fmtx"
 	"github.com/go-xuan/quanx/types/anyx"
 	"github.com/go-xuan/quanx/types/stringx"
 	"github.com/go-xuan/quanx/utils/encryptx"
-	"github.com/go-xuan/quanx/utils/fmtx"
 	"github.com/go-xuan/quanx/utils/randx"
 
 	"quanx_tools/command"
@@ -39,15 +39,13 @@ func handler() error {
 		fmt.Println(fmtx.Cyan.String("加密内容："), `在formula中，加密内容可将“文本值”和“加密变量”拼接组合。例如：formula=md5(abc_{app_id})，变量{app_id}拼接“abc_”前缀之后再进行md5加密`)
 		fmt.Println(fmtx.Cyan.String("加密变量："), `在formula中，引用变量需要使用“{}”进行标识，并需要在variables中对相应变量进行赋值`)
 		fmt.Println()
+
 		fmtx.Magenta.XPrintf(`%s函数使用：`, "formula")
-		for _, k := range enums.CryptoFunc.Keys() {
-			fmt.Printf("%-30s %s\n", fmtx.Green.String(k), enums.CryptoFunc.Get(k))
-		}
+		enums.Print(fmtx.Green, enums.CryptoFunc)
 		fmt.Println()
+
 		fmtx.Magenta.XPrintf(`%s变量使用：`, "variables")
-		for _, k := range enums.CryptoVariable.Keys() {
-			fmt.Printf("%-30s %s\n", fmtx.Green.String(k), enums.CryptoVariable.Get(k))
-		}
+		enums.Print(fmtx.Green, enums.CryptoVariable)
 	}
 
 	variables := Command.GetOptionValue("variables").String()
