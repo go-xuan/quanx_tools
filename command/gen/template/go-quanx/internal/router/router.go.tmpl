@@ -2,23 +2,24 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-xuan/quanx/app/ginx"
-	"github.com/go-xuan/quanx/server/gormx"
+	 {{if .Models}}"github.com/go-xuan/quanx/core/ginx"
+     "github.com/go-xuan/quanx/core/gormx"
 
-	"{{.App}}/internal/controller"
-	"{{.App}}/internal/model/entity"
+	 "{{.App}}/internal/controller"
+	 "{{.App}}/internal/model/entity"{{else}}
+	 "{{.App}}/internal/controller"{{end}}
 )
 
 func BindApiRouter(router *gin.RouterGroup) {
-	db := gormx.DB()
-
     // 业务API接口
-    {{- range $model := .Models}}
-    router.POST("{{path $model.Name}}/demo", controller.{{uc $model.Name}}DemoHandler)
+    router.POST("/demo", controller.DemoHandler)
+    {{if .Models}}{{- range $model := .Models}}
+    router.POST("/{{path $model.Name}}/demo", controller.{{uc $model.Name}}DemoHandler)
     {{- end}}
 
     // 增删改查-通用API接口实现
+    db := gormx.DB()
 	{{- range $model := .Models}}
 	ginx.NewCrudApi[entity.{{uc $model.Name}}](router.Group("{{path $model.Name}}"), db) // {{$model.Comment}}-增删改查
-	{{- end}}
+    {{- end}}{{end}}
 }

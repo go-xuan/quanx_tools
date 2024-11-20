@@ -10,9 +10,10 @@ import (
 
 type Model struct {
 	App          string   `json:"app"`          // 应用名
+	Database     string   `json:"database"`     // 数据库名
+	Schema       string   `json:"schema"`       // schema
 	Table        string   `json:"table"`        // 表名
 	Name         string   `json:"name"`         // 模型名
-	Schema       string   `json:"schema"`       // schema
 	Comment      string   `json:"comment"`      // 表备注
 	FiledNameLen int      `json:"filedNameLen"` // 字段名称长度
 	FiledTypeLen int      `json:"filedTypeLen"` // 字段类型长度

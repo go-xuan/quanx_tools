@@ -1,20 +1,24 @@
 package main
 
 import (
-	"github.com/go-xuan/quanx/app"
+	"github.com/go-xuan/quanx"
 
-	"{{.App}}/internal/model/entity"
-	"{{.App}}/internal/router"
+	{{if .Models}}"{{.App}}/internal/model/entity"
+	{{end}}"{{.App}}/internal/router"
 )
 
 func main() {
-	var engine = app.NewEngine()
+	var engine = quanx.NewEngine()
+
+	// 注册gin路由
 	engine.AddGinRouter(router.BindApiRouter)
+	{{if .Models}}// 初始化表
 	engine.AddTable(
 		{{- range $model := .Models}}
 		&entity.{{uc $model.Name}}{},
     	{{- end}}
-	)
+	){{end}}
+
 	// 初始化路由
 	engine.RUN()
 }

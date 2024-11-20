@@ -21,23 +21,25 @@ const (
 	Time    = "time.Time"
 
 	// Date database
-	Date      = "date"
-	Varchar   = "varchar"
-	Char      = "char"
-	Text      = "text"
-	Int2      = "int2"
-	Int4      = "int4"
-	Int8      = "int8"
-	Tinyint   = "tinyint"
-	Smallint  = "smallint"
-	Mediumint = "mediumint"
-	Bigint    = "bigint"
-	Float4    = "float4"
-	Numeric   = "numeric" // 数字
-	Numeric2  = "numeric(10,2)"
-	Decimal   = "decimal"
-	Timestamp = "timestamp"
-	Datetime  = "datetime"
+	Date       = "date"
+	Varchar    = "varchar"
+	Varchar100 = "varchar(100)"
+	Char       = "char"
+	Text       = "text"
+	Int2       = "int2"
+	Int4       = "int4"
+	Int8       = "int8"
+	Tinyint    = "tinyint"
+	Smallint   = "smallint"
+	Mediumint  = "mediumint"
+	Bigint     = "bigint"
+	Float4     = "float4"
+	Numeric    = "numeric" // 数字
+	Numeric2   = "numeric(10,2)"
+	Decimal    = "decimal"
+	Timestamp  = "timestamp"
+	Timestampz = "timestamptz"
+	Datetime   = "datetime"
 
 	// JavaString java
 	JavaString     = "String"
@@ -99,7 +101,7 @@ func DB2GoType(t string) string {
 		return Int64
 	case Float4, Numeric:
 		return Float64
-	case Timestamp, Datetime, Date:
+	case Timestamp, Timestampz, Datetime, Date:
 		return Time
 	case Bool:
 		return Bool
@@ -113,6 +115,8 @@ func DB2GormType(t string) string {
 	switch t {
 	case Char:
 		return Char
+	case Varchar:
+		return Varchar100
 	case Text:
 		return Text
 	case Tinyint:
@@ -125,7 +129,7 @@ func DB2GormType(t string) string {
 		return Bigint
 	case Float4, Numeric:
 		return Numeric2
-	case Timestamp, Datetime:
+	case Timestamp, Timestampz, Datetime:
 		return Timestamp
 	case Bool:
 		return Bool

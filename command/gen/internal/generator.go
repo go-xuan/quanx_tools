@@ -9,9 +9,9 @@ import (
 type Generator struct {
 	App       string          // 应用名
 	Root      string          // 代码生成路径
-	DB        *gormx.Config   // 应用数据库
-	Models    []*Model        // 模型列表
+	DB        gormx.Config    // 应用数据库
 	TmplFiles []*TemplateFile // 模板
+	Models    []*Model        // 模型列表
 }
 
 // Execute 生成代码

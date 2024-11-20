@@ -1,2 +1,2 @@
 # quanx_tools
-quax脚本工具
+quanx脚本工具

@@ -78,6 +78,6 @@ fi
 
 # 授权并移动到GOPATH/bin
 chmod +x "$output_binary"
-bin_path=$GOPATH/bin/
-mv "$output_binary" "$bin_path"
-echo "移动 $output_binary 到bin目录 $bin_path"
+bin_path=$GOPATH/bin/$output_binary
+cp "$output_binary" "$bin_path"
+echo "复制 $output_binary 到bin目录 $bin_path"

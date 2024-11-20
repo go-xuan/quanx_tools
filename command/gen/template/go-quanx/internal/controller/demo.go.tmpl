@@ -1,0 +1,20 @@
+package controller
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/go-xuan/quanx/net/respx"
+
+	"{{.App}}/internal/logic"
+	"{{.App}}/internal/model"
+)
+
+// DemoHandler Demo示例接口
+func DemoHandler(ctx *gin.Context) {
+	var err error
+	var req = &model.DemoReq{}
+	if err = ctx.ShouldBindQuery(req); err != nil {
+		respx.Ctx(ctx).ParamError(err)
+		return
+	}
+	respx.Ctx(ctx).Response(logic.Demo(ctx, req))
+}

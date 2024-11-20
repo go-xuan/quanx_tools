@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-xuan/quanx/os/flagx"
 
+	"quanx_tools/command/copy"
 	"quanx_tools/command/encrypt"
 	"quanx_tools/command/gen"
 	"quanx_tools/command/qr_code"
@@ -28,6 +29,7 @@ func main() {
 		qr_code.Command,
 		sql_fmt.Command,
 		time.Command,
+		copy.Command,
 	)
 	if err := flagx.Execute(); err != nil {
 		fmt.Println(err)

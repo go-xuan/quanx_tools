@@ -14,4 +14,5 @@ const (
 	Excel     = "excel"
 	Linux     = "linux"
 	Readme    = "readme"
+	Copy      = "copy"
 )

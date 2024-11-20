@@ -42,7 +42,7 @@ func handler() error {
 		fmt.Println("请在此SQL文件输入需要格式的SQL：", inputPath)
 		return nil
 	} else {
-		var fmtSql = sqlx.Format(string(bytes)).String()
+		var fmtSql = sqlx.Parse(string(bytes)).Beautify()
 		fmt.Println("格式化SQL:")
 		fmtx.Green.Println(fmtSql)
 		if Command.GetOptionValue("copy").Bool() {
