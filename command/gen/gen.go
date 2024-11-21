@@ -15,10 +15,10 @@ func init() {
 	Command = flagx.NewCommand(command.Gen, "代码生成工具",
 		flagx.StringOption("config", "配置文件", "gen.yaml"),
 		flagx.BoolOption("check", "模板检测", false),
-	).SetHandler(handler)
+	).SetExecutor(executor)
 }
 
-func handler() error {
+func executor() error {
 	// 读取配置文件
 	var config = &internal.Config{}
 	var configPath = Command.GetOptionValue("config").String()

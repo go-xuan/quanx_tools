@@ -23,10 +23,10 @@ func init() {
 		flagx.StringOption("content", "二维码内容", "123"),
 		flagx.IntOption("size", "二维码大小", 600),
 		flagx.BoolOption("copy", "复制粘贴", false),
-	).SetHandler(handler)
+	).SetExecutor(executor)
 }
 
-func handler() error {
+func executor() error {
 	content := Command.GetOptionValue("content").String()
 	size := Command.GetOptionValue("size").Int(600)
 	if content != "" {

@@ -12,9 +12,9 @@ func init() {
 	Command = flagx.NewCommand(command.Linux, "linux命令",
 		flagx.StringOption("config", "配置文件", "gen.yaml"),
 		flagx.BoolOption("check", "模板检测", false),
-	).SetHandler(linux)
+	).SetExecutor(executor)
 }
 
-func linux() error {
+func executor() error {
 	return nil
 }

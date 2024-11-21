@@ -26,10 +26,10 @@ func init() {
 		flagx.StringOption("formula", "加密公式", ""),
 		flagx.StringOption("variables", "加密变量", ""),
 		flagx.BoolOption("copy", "复制粘贴", false),
-	).SetHandler(handler)
+	).SetExecutor(executor)
 }
 
-func handler() error {
+func executor() error {
 	formula := Command.GetOptionValue("formula").String()
 
 	fmt.Println("input formula: ", formula)

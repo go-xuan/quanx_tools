@@ -20,10 +20,10 @@ func init() {
 	Command = flagx.NewCommand(command.SqlFmt, "SQL格式化工具",
 		flagx.StringOption("path", "SQL文件路径", ""),
 		flagx.BoolOption("copy", "复制粘贴", false),
-	).SetHandler(handler)
+	).SetExecutor(executor)
 }
 
-func handler() error {
+func executor() error {
 	path := Command.GetOptionValue("path").String()
 	if path == "" {
 		fmtx.Green.XPrintf("可使用%s参数，指向需要格式化的sql文件\n", "-path")

@@ -15,12 +15,12 @@ var Command *flagx.Command
 
 func init() {
 	Command = flagx.NewCommand(command.TimeParse, "时间解析器",
-		flagx.StringOption("parse", "待解析时间字符串，格式为YYYY-MM-DD hh:mm:ss", "")).
-		SetHandler(handler)
+		flagx.StringOption("parse", "待解析时间字符串，格式为YYYY-MM-DD hh:mm:ss", ""),
+	).SetExecutor(executor)
 }
 
 // 时间解析器
-func handler() error {
+func executor() error {
 	parseTime := Command.GetOptionValue("parse").String()
 	now := time.Now()
 	if parseTime != "" {

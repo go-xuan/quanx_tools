@@ -16,7 +16,7 @@ func Print(color fmtx.Color, enum *enumx.StringEnum[string]) {
 }
 
 var (
-	RandTypeExplain = enumx.NewStringEnum[string]().
+	RandTypes = enumx.NewStringEnum[string]().
 			Add(common.String, "字符串，默认长度为10。可通过args中的length进行约束，例：length=14").
 			Add(common.Int, "整数，默认取值范围为1~9999，可通过args中的min、max进行约束，例：min=1&max=100").
 			Add(common.Float, "浮点数，可通过args中的min、max、prec(精度)参数进行约束，例：min=1&max=100&prec=6").
@@ -36,7 +36,7 @@ var (
 			Add(common.Province, "省").
 			Add(common.City, "城市，目前仅支持湖北省内城市")
 
-	RandArgsExplain = enumx.NewStringEnum[string]().
+	RandArgs = enumx.NewStringEnum[string]().
 			Add("prefix", "前缀，所有type通用，非必要参数").
 			Add("suffix", "后缀，所有type通用，非必要参数").
 			Add("upper", "大写，true为开启，所有type通用，非必要参数").
@@ -59,11 +59,11 @@ var (
 			Add("field", `字段名，仅type=database时使用`).
 			Add("table", `数据库表名，仅type=database时使用`)
 
-	RequiredArgsExamples = enumx.NewStringEnum[string]().
+	RandArgsExamples = enumx.NewStringEnum[string]().
 				Add(common.Enum, `-args="enums=1,2,3"`).
 				Add(common.Database, `-args="type=postgres&host=localhost&port=5432&username=postgres&password=username&database=demo&table=t_user&field=user_name"`)
 
-	RequiredArgsExplain = enumx.NewStringEnum[*enumx.StringEnum[string]]().
+	MustArgsRandTypes = enumx.NewStringEnum[*enumx.StringEnum[string]]().
 				Add(common.Enum, EnumArgs).
 				Add(common.Database, DatabaseArgs)
 

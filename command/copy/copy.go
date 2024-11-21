@@ -16,10 +16,10 @@ func init() {
 		flagx.BoolOption("lh_ssh_login", "蓝湖堡垒机SSH登录", false),
 		flagx.BoolOption("lh_ssh_pwd", "蓝湖堡垒机SSH登录密码", false),
 		flagx.BoolOption("localhost", "本机IP", false),
-	).SetHandler(Copy)
+	).SetExecutor(executor)
 }
 
-func Copy() error {
+func executor() error {
 	var text string
 	if Command.GetOptionValue("lh_ssh_login").Bool() {
 		text = "ssh quanchao@kicwhbttml.bastionhost.aliyuncs.com -p 60022"
@@ -28,7 +28,7 @@ func Copy() error {
 	} else if Command.GetOptionValue("localhost").Bool() {
 		text = ipx.GetLocalIP()
 	} else {
-		Command.Help()
+		Command.OptionsHelp()
 	}
 	fmtx.Magenta.XPrintf("当前复制值：%s \n", text)
 	if err := utils.CopyTobePasted(text); err != nil {

@@ -15,10 +15,10 @@ func init() {
 		flagx.BoolOption("password", "账号密码", false),
 		flagx.BoolOption("linux", "linux常用命令", false),
 		flagx.BoolOption("mac", "mac常用命令", false),
-	).SetHandler(readme)
+	).SetExecutor(executor)
 }
 
-func readme() error {
+func executor() error {
 	if Command.GetOptionValue("password").Bool() {
 		enums.Print(fmtx.Green, enums.PasswordEnum)
 	} else if Command.GetOptionValue("linux").Bool() {
@@ -26,7 +26,7 @@ func readme() error {
 	} else if Command.GetOptionValue("mac").Bool() {
 		enums.Print(fmtx.Green, enums.MacEnum)
 	} else {
-		Command.Help()
+		Command.OptionsHelp()
 	}
 	return nil
 }
