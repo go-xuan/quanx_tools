@@ -24,7 +24,7 @@ func executor() error {
 	parseTime := Command.GetOptionValue("parse").String()
 	now := time.Now()
 	if parseTime != "" {
-		input := timex.Parse(parseTime)
+		input := timex.ParseDateOrTime(parseTime)
 		fmtx.Cyan.XPrintf("输入的时间是%s，时间戳是%v，%s年，星期%s，距离今天%v年/%v月/%v天\n",
 			parseTime,
 			input.UnixMilli(),

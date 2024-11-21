@@ -2,7 +2,6 @@ package rand
 
 import (
 	"fmt"
-
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/os/flagx"
 	"github.com/go-xuan/quanx/os/fmtx"
@@ -30,10 +29,16 @@ func init() {
 
 // 随机数生成器
 func executor() error {
-	randType := Command.GetOptionValue("type").String()
-	if randType == "" && Command.GetHelpOptionValue().Bool() {
+	if Command.GetHelpOptionValue().Bool() {
 		fmtx.Cyan.XPrintf("执行%s命令时，", command.Rand)
 		Command.OptionsHelp()
+		return nil
+	}
+
+	randType := Command.GetOptionValue("type").String()
+	if randType == "" && Command.GetHelpOptionValue().Bool() {
+		fmtx.Cyan.XPrintf("执行%s命令时，可用的-type参数值列表：\n", command.Rand)
+		enums.Print(fmtx.Green, enums.RandTypes)
 		return nil
 	}
 
@@ -44,15 +49,15 @@ func executor() error {
 	}
 
 	args := Command.GetOptionValue("args").String()
-	if randType != "" && args == "" {
-		if enum := enums.MustArgsRandTypes.Get(randType); enum != nil {
-			fmtx.Magenta.XPrintf("当-type=%s时，args参数不能为空", randType)
-			fmt.Println("\nargs参数示例：")
-			fmt.Println(enums.RandArgsExamples.Get(randType))
-
-			fmt.Println("\nargs参数说明：")
-			enums.Print(fmtx.Green, enum)
-			return nil
+	if args == "" {
+		if randType != "" {
+			if enum := enums.MustArgsRandTypes.Get(randType); enum != nil {
+				fmtx.Magenta.XPrintf("当-type=%s时，-args参数不能为空!\n", randType)
+				fmt.Println("-args参数示例：", enums.RandArgsExamples.Get(randType))
+				fmt.Println("-args参数说明：")
+				enums.Print(fmtx.Green, enum)
+				return nil
+			}
 		} else if Command.GetHelpOptionValue().Bool() {
 			fmtx.Red.Println(`args参数可用于约束随机值的生成条件，参数格式为-args="key1=value1&key2=value2"`)
 			enums.Print(fmtx.Green, enums.RandArgs)

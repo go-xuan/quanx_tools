@@ -67,7 +67,7 @@ func GetDBFieldDataList(args string) ([]string, error) {
 		Enable:   true,
 		Type:     params["type"],
 		Host:     params["host"],
-		Port:     stringx.ToInt(params["port"]),
+		Port:     stringx.ParseInt(params["port"]),
 		Username: params["username"],
 		Password: params["password"],
 		Database: params["database"],

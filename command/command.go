@@ -12,7 +12,6 @@ const (
 	Restic    = "restic"
 	TTS       = "tts"
 	Excel     = "excel"
-	Linux     = "linux"
 	Readme    = "readme"
 	Copy      = "copy"
 )
