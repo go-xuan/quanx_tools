@@ -125,9 +125,9 @@ func (db DBConfig) GetModels(app string) ([]*Model, error) {
 	defer gormx.Close()
 	var sql string
 	switch db.Type {
-	case gormx.Mysql:
+	case gormx.MYSQL:
 		sql = mysqlTableFieldQuerySql(db.Database, db.Include, db.Exclude)
-	case gormx.Postgres:
+	case gormx.POSTGRES, gormx.PGSQL:
 		sql = pgsqlTableFieldQuerySql(db.Database, db.Schema, db.Include, db.Exclude)
 	default:
 		return nil, errorx.New("数据库类型（db.type）只支持mysql或者postgres")
