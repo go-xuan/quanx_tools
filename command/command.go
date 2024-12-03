@@ -14,4 +14,5 @@ const (
 	Excel     = "excel"
 	Readme    = "readme"
 	Copy      = "copy"
+	Password  = "pwd"
 )

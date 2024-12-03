@@ -12,16 +12,13 @@ var Command *flagx.Command
 
 func init() {
 	Command = flagx.NewCommand(command.Readme, "README",
-		flagx.BoolOption("password", "账号密码", false),
 		flagx.BoolOption("linux", "linux常用命令", false),
 		flagx.BoolOption("mac", "mac常用命令", false),
 	).SetExecutor(executor)
 }
 
 func executor() error {
-	if Command.GetOptionValue("password").Bool() {
-		enums.Print(fmtx.Green, enums.PasswordEnum)
-	} else if Command.GetOptionValue("linux").Bool() {
+	if Command.GetOptionValue("linux").Bool() {
 		enums.Print(fmtx.Green, enums.LinuxEnum)
 	} else if Command.GetOptionValue("mac").Bool() {
 		enums.Print(fmtx.Green, enums.MacEnum)
