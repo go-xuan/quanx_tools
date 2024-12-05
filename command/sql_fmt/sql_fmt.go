@@ -8,7 +8,7 @@ import (
 	"github.com/go-xuan/quanx/os/filex"
 	"github.com/go-xuan/quanx/os/flagx"
 	"github.com/go-xuan/quanx/os/fmtx"
-	"github.com/go-xuan/quanx/utils/sqlx"
+	"github.com/go-xuan/sqlx/beautify"
 
 	"quanx_tools/command"
 	"quanx_tools/common/utils"
@@ -24,6 +24,9 @@ func init() {
 }
 
 func executor() error {
+	if args := Command.GetArgs(); len(args) > 0 && args[0] == "-h" {
+		Command.OptionsHelp()
+	}
 	path := Command.GetOptionValue("path").String()
 	if path == "" {
 		fmtx.Green.XPrintf("可使用%s参数，指向需要格式化的sql文件\n", "-path")
@@ -42,7 +45,7 @@ func executor() error {
 		fmt.Println("请在此SQL文件输入需要格式的SQL：", inputPath)
 		return nil
 	} else {
-		var fmtSql = sqlx.Parse(string(bytes)).Beautify()
+		var fmtSql = beautify.Parse(string(bytes)).Beautify()
 		fmt.Println("格式化SQL:")
 		fmtx.Green.Println(fmtSql)
 		if Command.GetOptionValue("copy").Bool() {

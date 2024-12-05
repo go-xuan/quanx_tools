@@ -29,14 +29,8 @@ func init() {
 
 // 随机数生成器
 func executor() error {
-	if Command.GetHelpOptionValue().Bool() {
-		fmtx.Cyan.XPrintf("执行%s命令时，", command.Rand)
-		Command.OptionsHelp()
-		return nil
-	}
-
 	randType := Command.GetOptionValue("type").String()
-	if randType == "" && Command.GetHelpOptionValue().Bool() {
+	if randType == "" && Command.NeedHelp() {
 		fmtx.Cyan.XPrintf("执行%s命令时，可用的-type参数值列表：\n", command.Rand)
 		enums.Print(fmtx.Green, enums.RandTypes)
 		return nil
@@ -58,7 +52,7 @@ func executor() error {
 				enums.Print(fmtx.Green, enum)
 				return nil
 			}
-		} else if Command.GetHelpOptionValue().Bool() {
+		} else if Command.NeedHelp() {
 			fmtx.Red.Println(`args参数可用于约束随机值的生成条件，参数格式为-args="key1=value1&key2=value2"`)
 			enums.Print(fmtx.Green, enums.RandArgs)
 			return nil
