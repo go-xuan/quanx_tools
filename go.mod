@@ -2,12 +2,15 @@ module quanx_tools
 
 go 1.18
 
-replace github.com/go-xuan/quanx v1.24.830 => ./../quanx
+replace (
+	github.com/go-xuan/quanx v1.24.1210 => ./../quanx
+	github.com/go-xuan/sqlx v0.0.2 => ./../sqlx
+)
 
 require (
 	github.com/go-ole/go-ole v1.3.0
-	github.com/go-xuan/quanx v1.24.830
-	github.com/go-xuan/sqlx v0.0.1
+	github.com/go-xuan/quanx v1.24.1210
+	github.com/go-xuan/sqlx v0.0.2
 	github.com/sirupsen/logrus v1.9.3
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/tealeg/xlsx v1.0.5
