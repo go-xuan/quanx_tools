@@ -10,11 +10,15 @@ import (
 
 // DemoHandler Demo示例接口
 func DemoHandler(ctx *gin.Context) {
-	var err error
 	var req = &model.DemoReq{}
-	if err = ctx.ShouldBindQuery(req); err != nil {
-		respx.Ctx(ctx).ParamError(err)
+	if err := ctx.ShouldBindQuery(req); err != nil {
+		respx.ParamError(ctx, err)
 		return
 	}
-	respx.Ctx(ctx).Response(logic.Demo(ctx, req))
+	if result, err := logic.Demo(ctx, req); err != nil {
+        respx.Error(ctx, err)
+    } else {
+	    respx.Success(ctx, result)
+    }
+    return
 }

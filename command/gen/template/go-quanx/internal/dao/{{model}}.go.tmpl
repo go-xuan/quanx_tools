@@ -1,16 +1,18 @@
 package dao
 
 import (
-	"github.com/go-xuan/quanx/server/gormx"
+	"github.com/go-xuan/quanx/core/gormx"
+	"github.com/go-xuan/quanx/os/errorx"
 
 	"{{.App}}/internal/model"
 	"{{.App}}/internal/model/entity"
 )
 
 // {{uc .Name}}List {{.Comment}}列表查询
-func {{uc .Name}}List() (result []*model.{{uc .Name}}, err error) {
-	if err = gormx.GetDB().Model(&entity.{{uc .Name}}{}).Order("id desc").Scan(&result).Error; err != nil {
-		return
+func {{uc .Name}}List() ([]*model.{{uc .Name}}, error) {
+    var result []*model.{{uc .Name}}
+	if err := gormx.DB().Model(&entity.{{uc .Name}}{}).Order("id desc").Scan(&result).Error; err != nil {
+		return nil, errorx.Wrap(err, "query error")
 	}
-	return
+	return result, nil
 }
