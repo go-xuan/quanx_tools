@@ -74,7 +74,7 @@ func executor() error {
 	if Command.GetOptionValue("copy").Bool() {
 		data := options.RandDataString()
 		fmtx.Magenta.Println(data)
-		if err := utils.CopyTobePasted(data); err != nil {
+		if err := utils.WriteToClipboard(data); err != nil {
 			return errorx.Wrap(err, "copy value to be pasted failed")
 		}
 	} else {

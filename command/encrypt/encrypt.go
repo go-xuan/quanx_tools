@@ -70,7 +70,7 @@ func executor() error {
 	fmtx.Magenta.XPrintf("encrypt result: %s", result)
 	// 开启复制
 	if Command.GetOptionValue("copy").Bool() {
-		if err := utils.CopyTobePasted(result); err != nil {
+		if err := utils.WriteToClipboard(result); err != nil {
 			return errorx.Wrap(err, "复制值到待粘贴失败")
 		}
 	}

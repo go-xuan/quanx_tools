@@ -8,6 +8,7 @@ replace (
 )
 
 require (
+	github.com/atotto/clipboard v0.1.4
 	github.com/go-ole/go-ole v1.3.0
 	github.com/go-xuan/quanx v1.24.1210
 	github.com/go-xuan/sqlx v0.0.2

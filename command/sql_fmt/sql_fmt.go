@@ -22,41 +22,49 @@ func init() {
 		flagx.BoolOption("copy", "复制粘贴", false),
 	).SetExecutor(executor)
 }
-
 func executor() error {
 	if args := Command.GetArgs(); len(args) > 0 && args[0] == "-h" {
 		Command.OptionsHelp()
 	}
-	path := Command.GetOptionValue("path").String()
-	if path == "" {
-		fmtx.Green.XPrintf("可使用%s参数，指向需要格式化的sql文件\n", "-path")
-		return nil
-	}
-	var inputPath = filex.Pwd(path)
-	fmt.Println("目标SQL文件：", inputPath)
-	if bytes, err := filex.ReadFile(inputPath); err != nil {
-		if !filex.Exists(inputPath) {
-			_ = filex.Create(inputPath)
-			fmt.Println("请在此SQL文件输入需要格式的SQL：", inputPath)
-			return nil
+	var sql, outputPath, ifCopy = "", "beautify.sql", false
+	if path := Command.GetOptionValue("path").String(); path != "" {
+		path = filex.Pwd(path)
+		fmt.Println("目标SQL文件：", path)
+		if bytes, err := filex.ReadFile(path); err != nil {
+			if !filex.Exists(path) {
+				_ = filex.Create(path)
+				fmt.Println("请在此SQL文件输入需要格式的SQL：", path)
+				return err
+			}
+			return errorx.Wrap(err, "读取SQL文件失败")
+		} else if len(bytes) == 0 {
+			fmt.Println("请在此SQL文件输入需要格式的SQL：", path)
+			return err
+		} else {
+			sql = string(bytes)
+			var dir, name, suffix = filex.Analyse(path)
+			outputPath = filepath.Join(dir, fmt.Sprintf("%s_fmt%s", name, suffix))
+			ifCopy = Command.GetOptionValue("copy").Bool()
 		}
-		return errorx.Wrap(err, "读取SQL文件失败")
-	} else if len(bytes) == 0 {
-		fmt.Println("请在此SQL文件输入需要格式的SQL：", inputPath)
-		return nil
+	} else if content, err := utils.ReadFromClipboard(); content != "" && err == nil {
+		sql, ifCopy = content, true
 	} else {
-		var fmtSql = beautify.Parse(string(bytes)).Beautify()
+		return errorx.Wrap(err, "获取SQL失败")
+	}
+	if len(sql) > 20 {
+		// 美化sql
+		var beautifySql = beautify.Parse(sql).Beautify()
 		fmt.Println("格式化SQL:")
-		fmtx.Green.Println(fmtSql)
-		if Command.GetOptionValue("copy").Bool() {
-			if err = utils.CopyTobePasted(fmtSql); err != nil {
-				return errorx.Wrap(err, "复制值到待粘贴内容失败")
+		fmtx.Green.Println(beautifySql)
+
+		// 输出到粘贴板或者文件
+		if ifCopy {
+			if err := utils.WriteToClipboard(beautifySql); err != nil {
+				return errorx.Wrap(err, "复制SQL到粘贴板失败")
 			}
 		} else {
-			var dir, name, suffix = filex.Analyse(inputPath)
-			var outputPath = filepath.Join(dir, fmt.Sprintf("%s_fmt%s", name, suffix))
 			fmt.Println("写入SQL文件:", outputPath)
-			if err = filex.WriteFile(outputPath, fmtSql); err != nil {
+			if err := filex.WriteFile(outputPath, beautifySql); err != nil {
 				return errorx.Wrap(err, "写入SQL文件失败")
 			}
 		}

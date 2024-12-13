@@ -28,7 +28,7 @@ func executor() error {
 		Command.OptionsHelp()
 	}
 	fmtx.Magenta.XPrintf("当前复制值：%s \n", text)
-	if err := utils.CopyTobePasted(text); err != nil {
+	if err := utils.WriteToClipboard(text); err != nil {
 		return errorx.Wrap(err, "copy value to be pasted failed")
 	}
 	return nil

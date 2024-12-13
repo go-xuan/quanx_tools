@@ -47,7 +47,7 @@ func executor() error {
 	}
 	fmtx.Blue.XPrintf("二维码保存至：%s", path)
 	if Command.GetOptionValue("copy").Bool() {
-		if err := utils.CopyTobePasted(path); err != nil {
+		if err := utils.WriteToClipboard(path); err != nil {
 			return errorx.Wrap(err, "复制值二维码文件路径失败")
 		}
 	}
