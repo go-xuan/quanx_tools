@@ -64,7 +64,7 @@ func executor() error {
 			}
 		} else {
 			fmt.Println("写入SQL文件:", outputPath)
-			if err := filex.WriteFile(outputPath, beautifySql); err != nil {
+			if err := filex.WriteFileString(outputPath, beautifySql); err != nil {
 				return errorx.Wrap(err, "写入SQL文件失败")
 			}
 		}
