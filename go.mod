@@ -14,8 +14,6 @@ require (
 	github.com/go-xuan/sqlx v0.0.2
 	github.com/sirupsen/logrus v1.9.3
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-	github.com/tealeg/xlsx v1.0.5
-	github.com/tidwall/gjson v1.17.1
 )
 
 require (
@@ -35,8 +33,6 @@ require (
 	github.com/redis/go-redis/v9 v9.5.3 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
-	github.com/tidwall/match v1.1.1 // indirect
-	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/sys v0.26.0 // indirect
