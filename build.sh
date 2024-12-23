@@ -28,22 +28,33 @@ echo "输出二进制文件: $output_binary"
 # 检测操作系统和架构
 os_type=$(uname -s)
 arch_type=$(uname -m)
-if [[ "$os_type" == "Darwin" ]]; then
-  export CGO_ENABLED=0
-  export GOOS=darwin
-  export GOARCH=$arch_type
-elif [[ "$os_type" == "Linux" ]]; then
-  export CGO_ENABLED=0
-  export GOOS=linux
-  export GOARCH=$arch_type
-else
-  output_binary="$output_binary".exe
-  os_type='Windows'
-  SET CGO_ENABLED=0
-  SET GOOS=windows
-  SET GOARCH="$arch_type"
-fi
 echo "系统和架构：$os_type/$arch_type"
+
+# 判断操作系统
+case $os_type in
+  Linux)
+    bin_path=$GOPATH/bin/$output_binary
+    export GOOS=linux
+    export GOARCH=$arch_type
+    ;;
+  Darwin)
+    bin_path=$GOPATH/bin/$output_binary
+    export GOOS=darwin
+    export GOARCH=$arch_type
+    ;;
+  MINGW*|MSYS*|CYGWIN*)
+    output_binary="$output_binary".exe
+    bin_path=$GOPATH\\bin\\$output_binary
+    export GOOS=windows
+    if [[ "$arch_type" == "x86_64" ]]; then
+      export GOARCH=amd64
+    fi
+    ;;
+  *)
+    echo "未知的操作系统: $os_type"
+    exit 1
+    ;;
+esac
 
 # 判断是否包含特定参数
 add_git_info() {
