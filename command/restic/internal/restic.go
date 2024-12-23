@@ -147,7 +147,7 @@ func (e *SnapshotsExecutor) Execute() (string, error) {
 // ExecCommandAndLog 执行命令并记录日志
 func ExecCommandAndLog(cmd string, msg string) (string, error) {
 	log.WithField(`cmd`, cmd).Info(msg)
-	if stdout, stderr, err := execx.ExecCommand(cmd); err != nil {
+	if stdout, stderr, err := execx.Command(cmd).Run(); err != nil {
 		log.WithField(`cmd`, cmd).Error(err)
 		return stdout + "\n" + stderr, err
 	} else {

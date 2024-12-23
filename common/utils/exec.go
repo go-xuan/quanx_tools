@@ -19,7 +19,7 @@ func WriteToClipboard(text string) error {
 	default:
 		return nil
 	}
-	if _, _, err := execx.ExecCommand(command, bytes.NewBufferString(text)); err != nil {
+	if _, _, err := execx.Command(command).Stdin(bytes.NewBufferString(text)).Run(); err != nil {
 		return errorx.Wrap(err, "copy value to clipboard failed")
 	}
 	return nil
@@ -30,7 +30,7 @@ func ReadFromClipboard() (content string, err error) {
 	case "windows":
 		content, err = clipboard.ReadAll()
 	case "darwin":
-		content, _, err = execx.ExecCommand("pbpaste")
+		content, _, err = execx.Command("pbpaste").Run()
 	default:
 		err = errorx.New("unknown os")
 	}
