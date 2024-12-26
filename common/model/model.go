@@ -89,7 +89,7 @@ func (list RandFieldList) RandResult(enums map[string][]string) (result map[stri
 				Offset:  index,
 				Enums:   enums[field.Name],
 			}
-			value = randModel.RandDataString()
+			value = randModel.NewString()
 		} else {
 			value = field.Default
 		}

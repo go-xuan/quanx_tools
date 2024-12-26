@@ -72,16 +72,17 @@ func executor() error {
 		}
 	}
 	if Command.GetOptionValue("copy").Bool() {
-		data := options.RandDataString()
+		data := options.NewString()
 		fmtx.Magenta.Println(data)
 		if err := utils.WriteToClipboard(data); err != nil {
 			return errorx.Wrap(err, "copy value to be pasted failed")
 		}
+		fmtx.Magenta.XPrintf("当前值%s已复制到粘贴板\n", data)
 	} else {
 		size := Command.GetOptionValue("size").Int()
 		for i := 0; i < size; i++ {
 			options.Offset = i
-			fmtx.Magenta.Println(options.RandDataString())
+			fmtx.Magenta.Println(options.NewString())
 		}
 	}
 	return nil

@@ -73,6 +73,7 @@ func executor() error {
 		if err := utils.WriteToClipboard(result); err != nil {
 			return errorx.Wrap(err, "复制值到待粘贴失败")
 		}
+		fmtx.Magenta.XPrintf("当前值%s已复制到粘贴板\n", result)
 	}
 	return nil
 }

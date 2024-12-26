@@ -50,6 +50,7 @@ func executor() error {
 		if err := utils.WriteToClipboard(path); err != nil {
 			return errorx.Wrap(err, "复制值二维码文件路径失败")
 		}
+		fmtx.Magenta.XPrintf("当前值%s已复制到粘贴板\n", path)
 	}
 	return nil
 }
