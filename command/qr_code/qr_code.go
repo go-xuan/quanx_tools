@@ -23,10 +23,10 @@ func init() {
 		flagx.StringOption("content", "二维码内容", "123"),
 		flagx.IntOption("size", "二维码大小", 600),
 		flagx.BoolOption("copy", "复制粘贴", false),
-	).SetHandler(handler)
+	).SetExecutor(executor)
 }
 
-func handler() error {
+func executor() error {
 	content := Command.GetOptionValue("content").String()
 	size := Command.GetOptionValue("size").Int(600)
 	if content != "" {
@@ -47,9 +47,10 @@ func handler() error {
 	}
 	fmtx.Blue.XPrintf("二维码保存至：%s", path)
 	if Command.GetOptionValue("copy").Bool() {
-		if err := utils.CopyTobePasted(path); err != nil {
+		if err := utils.WriteToClipboard(path); err != nil {
 			return errorx.Wrap(err, "复制值二维码文件路径失败")
 		}
+		fmtx.Magenta.XPrintf("当前值%s已复制到粘贴板\n", path)
 	}
 	return nil
 }

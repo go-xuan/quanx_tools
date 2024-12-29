@@ -2,7 +2,6 @@ package rand
 
 import (
 	"fmt"
-
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/os/flagx"
 	"github.com/go-xuan/quanx/os/fmtx"
@@ -20,52 +19,50 @@ var Command *flagx.Command
 
 func init() {
 	Command = flagx.NewCommand(command.Rand, "随机数生成器",
-		flagx.StringOption("type", "数据类型", "string"),
+		flagx.StringOption("type", "数据类型", ""),
 		flagx.IntOption("size", "生成数量", 1),
 		flagx.StringOption("args", "约束参数", ""),
 		flagx.StringOption("default", "默认值", ""),
 		flagx.BoolOption("copy", "复制粘贴", false),
-	).SetHandler(handler)
+	).SetExecutor(executor)
 }
 
 // 随机数生成器
-func handler() error {
+func executor() error {
 	randType := Command.GetOptionValue("type").String()
+	if randType == "" && Command.NeedHelp() {
+		fmtx.Cyan.XPrintf("执行%s命令时，可用的-type参数值列表：\n", command.Rand)
+		enums.Print(fmtx.Green, enums.RandTypes)
+		return nil
+	}
+
+	if randType != "" && !slicex.Contains(enums.RandTypes.Keys(), randType) {
+		fmtx.Red.XPrintf("当前输入命令 -type=%s 暂不支持，以下是可用的-type参数值：\n", randType)
+		enums.Print(fmtx.Green, enums.RandTypes)
+		return nil
+	}
+
 	args := Command.GetOptionValue("args").String()
-	if randType == "" && args == "" {
-		fmtx.Cyan.XPrintf("执行%s命令时，参数不能为空！", command.Rand)
-		Command.Help()
-		return nil
-	}
-
-	if !slicex.Contains(enums.RandTypeExplain.Keys(), randType) {
-		fmtx.Red.XPrintf("当前输入的 %s 不可用！", "-type="+randType)
-		fmtx.Magenta.XPrintf("以下是可用的%s参数值：\n", "-type")
-		enums.Print(fmtx.Green, enums.RandTypeExplain)
-		return nil
-	}
-
 	if args == "" {
-		if enum := enums.RequiredArgsExplain.Get(randType); enum != nil {
-			fmtx.Magenta.XPrintf("当-type=%s时，args参数不能为空", randType)
-			fmt.Println("\nargs参数示例：")
-			fmt.Println(enums.RequiredArgsExamples.Get(randType))
-
-			fmt.Println("\nargs参数说明：")
-			enums.Print(fmtx.Green, enum)
+		if randType != "" {
+			if enum := enums.MustArgsRandTypes.Get(randType); enum != nil {
+				fmtx.Magenta.XPrintf("当-type=%s时，-args参数不能为空!\n", randType)
+				fmt.Println("-args参数示例：", enums.RandArgsExamples.Get(randType))
+				fmt.Println("-args参数说明：")
+				enums.Print(fmtx.Green, enum)
+				return nil
+			}
+		} else if Command.NeedHelp() {
+			fmtx.Red.Println(`args参数可用于约束随机值的生成条件，参数格式为-args="key1=value1&key2=value2"`)
+			enums.Print(fmtx.Green, enums.RandArgs)
 			return nil
 		}
-	} else if args == "explain" {
-		Command.Help()
-		fmtx.Red.Println(`args参数可用于约束随机值的生成条件，参数格式为-args="key=value&key=value"`)
-		enums.Print(fmtx.Green, enums.RandArgsExplain)
-		return nil
 	}
 
 	options := randx.Options{
 		Type:    randType,
 		Default: Command.GetOptionValue("default").String(),
-		Param:   randx.NewParam(args),
+		Args:    randx.NewArgs(args),
 	}
 	if options.Type == common.Database {
 		if data, err := dao.GetDBFieldDataList(args); err != nil {
@@ -75,16 +72,17 @@ func handler() error {
 		}
 	}
 	if Command.GetOptionValue("copy").Bool() {
-		data := options.RandDataString()
+		data := options.NewString()
 		fmtx.Magenta.Println(data)
-		if err := utils.CopyTobePasted(data); err != nil {
+		if err := utils.WriteToClipboard(data); err != nil {
 			return errorx.Wrap(err, "copy value to be pasted failed")
 		}
+		fmtx.Magenta.XPrintf("当前值%s已复制到粘贴板\n", data)
 	} else {
 		size := Command.GetOptionValue("size").Int()
 		for i := 0; i < size; i++ {
 			options.Offset = i
-			fmtx.Magenta.Println(options.RandDataString())
+			fmtx.Magenta.Println(options.NewString())
 		}
 	}
 	return nil

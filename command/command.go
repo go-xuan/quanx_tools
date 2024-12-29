@@ -11,8 +11,7 @@ const (
 	Redis     = "redis"
 	Restic    = "restic"
 	TTS       = "tts"
-	Excel     = "excel"
-	Linux     = "linux"
 	Readme    = "readme"
 	Copy      = "copy"
+	Password  = "pwd"
 )

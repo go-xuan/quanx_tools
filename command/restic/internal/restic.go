@@ -114,43 +114,43 @@ func (e *ForgetExecutor) Execute() (string, error) {
 	var cmd = strings.Builder{}
 	cmd.WriteString(e.Repository.SetEnv())
 	cmd.WriteString(e.Forget.Command())
-	out, err := ExecCommandAndLog(cmd.String(), "删除restic快照")
-	if err != nil {
+	if out, err := ExecCommandAndLog(cmd.String(), "删除restic快照"); err != nil {
 		return "", errorx.Wrap(err, "删除restic快照失败")
+	} else {
+		return out, nil
 	}
-	return out, nil
 }
 
 func (e *InitRepoExecutor) Execute() (string, error) {
 	var cmd = strings.Builder{}
 	cmd.WriteString(e.Repository.SetEnv())
 	cmd.WriteString(`restic init --verbose`)
-	out, err := ExecCommandAndLog(cmd.String(), "初始化restic存储库")
-	if err != nil {
+	if out, err := ExecCommandAndLog(cmd.String(), "初始化restic存储库"); err != nil {
 		return "", errorx.Wrap(err, "初始化restic存储库失败")
+	} else {
+		return out, nil
 	}
-	return out, nil
 }
 
 func (e *SnapshotsExecutor) Execute() (string, error) {
 	var cmd = strings.Builder{}
 	cmd.WriteString(e.Repository.SetEnv())
 	cmd.WriteString(`restic snapshots --json`)
-	out, err := ExecCommandAndLog(cmd.String(), "执行restic快照查询命令")
-	if err != nil {
-		return "", errorx.Wrap(err, "查询restic快照失败")
-	}
 
-	return out, nil
+	if out, err := ExecCommandAndLog(cmd.String(), "执行restic快照查询命令"); err != nil {
+		return "", errorx.Wrap(err, "查询restic快照失败")
+	} else {
+		return out, nil
+	}
 }
 
 // ExecCommandAndLog 执行命令并记录日志
 func ExecCommandAndLog(cmd string, msg string) (string, error) {
 	log.WithField(`cmd`, cmd).Info(msg)
-	if out, err := execx.ExecCommand(cmd); err != nil {
+	if stdout, stderr, err := execx.Command(cmd).Run(); err != nil {
 		log.WithField(`cmd`, cmd).Error(err)
-		return "", err
+		return stdout + "\n" + stderr, err
 	} else {
-		return out, nil
+		return stdout, nil
 	}
 }

@@ -55,7 +55,7 @@ func (t *TemplateFile) WriteDataToFile(root string, data any, model ...string) e
 		if err := tt.Execute(buf, data); err != nil {
 			return errorx.Wrap(err, "模版执行失败："+t.Path)
 		}
-		if err := filex.WriteFile(filePath, buf.String()); err != nil {
+		if err := filex.WriteFileString(filePath, buf.String()); err != nil {
 			return errorx.Wrap(err, "写入文件失败"+filePath)
 		}
 		if writeMode == doOverwrite {

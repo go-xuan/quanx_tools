@@ -15,12 +15,11 @@ var Command *flagx.Command
 
 func init() {
 	Command = flagx.NewCommand(command.TTS, "文本转语音（仅适用windows）",
-		flagx.StringOption("content", "语音内容", "哈哈哈")).
-		SetHandler(handler)
+		flagx.StringOption("content", "语音内容", "哈哈哈"),
+	).SetExecutor(executor)
 }
 
-// handler 文本转语音
-func handler() error {
+func executor() error {
 	var content = Command.GetOptionValue("content").String()
 	var output = filepath.Join(command.TTS, content+".mp3")
 	if err := ole.CoInitialize(0); err != nil {

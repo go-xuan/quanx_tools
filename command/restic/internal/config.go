@@ -234,9 +234,9 @@ func (d *Datasource) Dump(dir ...string) (dump string, path string) {
 		path = filepath.Join(path, dir[0])
 	}
 	switch d.Type {
-	case gormx.Mysql:
+	case gormx.MYSQL:
 		dump, path = d.mysqlDump(path)
-	case gormx.Postgres:
+	case gormx.POSTGRES, gormx.PGSQL:
 		dump, path = d.pgsqlDump(path)
 	case "mongo":
 		dump, path = d.mongoDump(path)

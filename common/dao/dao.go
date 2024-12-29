@@ -15,9 +15,9 @@ func TableList(source string, tables ...string) ([]*model.TableQuery, error) {
 	var config = gormx.GetConfig(source)
 	source = config.Source
 	switch config.Type {
-	case gormx.Mysql:
+	case gormx.MYSQL:
 		return MysqlTableList(source, config.Database, tables...)
-	case gormx.Postgres:
+	case gormx.POSTGRES, gormx.PGSQL:
 		return PgTableList(source, config.Database, config.Schema, tables...)
 	default:
 		return nil, errorx.Errorf("not support type: %s", config.Type)
@@ -28,9 +28,9 @@ func TableFieldList(source string, tables ...string) ([]*model.TableField, error
 	var config = gormx.GetConfig(source)
 	source = config.Source
 	switch config.Type {
-	case gormx.Mysql:
+	case gormx.MYSQL:
 		return MysqlTableFieldList(source, config.Database, tables...)
-	case gormx.Postgres:
+	case gormx.POSTGRES, gormx.PGSQL:
 		return PgTableFieldList(source, config.Database, config.Schema, tables...)
 	default:
 		return nil, errorx.Errorf("not support type: %s", config.Type)
@@ -41,9 +41,9 @@ func TableQuery(source string, table string) (*model.TableQuery, error) {
 	var config = gormx.GetConfig(source)
 	source = config.Source
 	switch config.Type {
-	case gormx.Mysql:
+	case gormx.MYSQL:
 		return MysqlTableQuery(source, config.Database, table)
-	case gormx.Postgres:
+	case gormx.POSTGRES, gormx.PGSQL:
 		return PgTableQuery(source, config.Database, config.Schema, table)
 	default:
 		return nil, errorx.Errorf("not support type: %s", config.Type)
@@ -67,7 +67,7 @@ func GetDBFieldDataList(args string) ([]string, error) {
 		Enable:   true,
 		Type:     params["type"],
 		Host:     params["host"],
-		Port:     stringx.ToInt(params["port"]),
+		Port:     stringx.ParseInt(params["port"]),
 		Username: params["username"],
 		Password: params["password"],
 		Database: params["database"],

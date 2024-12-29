@@ -8,6 +8,7 @@ import (
 	"quanx_tools/command/copy"
 	"quanx_tools/command/encrypt"
 	"quanx_tools/command/gen"
+	"quanx_tools/command/pwd"
 	"quanx_tools/command/qr_code"
 	"quanx_tools/command/rand"
 	"quanx_tools/command/readme"
@@ -24,6 +25,7 @@ func main() {
 		encrypt.Command,
 		redis.Command,
 		readme.Command,
+		pwd.Command,
 		//restic.Command,
 		tts.Command,
 		qr_code.Command,
