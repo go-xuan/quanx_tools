@@ -2,10 +2,15 @@ module quanx_tools
 
 go 1.18
 
+replace (
+	github.com/go-xuan/quanx v1.25.5 => ../quanx
+	github.com/go-xuan/sqlx v0.0.3 => ../sqlx
+)
+
 require (
 	github.com/atotto/clipboard v0.1.4
 	github.com/go-ole/go-ole v1.3.0
-	github.com/go-xuan/quanx v1.25.3
+	github.com/go-xuan/quanx v1.25.5
 	github.com/go-xuan/sqlx v0.0.3
 	github.com/sirupsen/logrus v1.9.3
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
@@ -24,7 +29,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
-	github.com/redis/go-redis/v9 v9.6.0 // indirect
+	github.com/redis/go-redis/v9 v9.7.0 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect

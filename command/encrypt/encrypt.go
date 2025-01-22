@@ -9,6 +9,7 @@ import (
 	"github.com/go-xuan/quanx/os/flagx"
 	"github.com/go-xuan/quanx/os/fmtx"
 	"github.com/go-xuan/quanx/types/anyx"
+	"github.com/go-xuan/quanx/types/enumx"
 	"github.com/go-xuan/quanx/types/stringx"
 	"github.com/go-xuan/quanx/utils/encryptx"
 	"github.com/go-xuan/quanx/utils/randx"
@@ -19,40 +20,61 @@ import (
 	"quanx_tools/common/utils"
 )
 
-var Command *flagx.Command
+var (
+	Command        = flagx.NewCommand(command.Encrypt, "根据公式加密")
+	CryptoFunc     = enumx.NewStringEnum[string]()
+	CryptoVariable = enumx.NewStringEnum[string]()
+)
 
 func init() {
-	Command = flagx.NewCommand(command.Encrypt, "根据公式加密",
+	Command.AddOption(
 		flagx.StringOption("formula", "加密公式", ""),
 		flagx.StringOption("variables", "加密变量", ""),
 		flagx.BoolOption("copy", "复制粘贴", false),
 	).SetExecutor(executor)
+
+	CryptoFunc.
+		Add("upper", `转大写，例如：-formula=upper(abc)，将字符串“abc”转为大写“ABC”`).
+		Add("lower", `转小写，例如：-formula=upper(ABC)，将字符串“ABC”转为小写“abc”`).
+		Add("reverse", `反转字符串，例如：-formula=reverse(abc)，将字符串“abc”转为“cba”`).
+		Add("md5", `md5加密，例如：-formula=md5(abc)，将字符串“abc”进行md5加密`).
+		Add("base64", `base64加密，例如：-formula=base64(abc)，将字符串“abc”进行base64加密`).
+		Add("...", "扩展中，敬请期待...")
+
+	CryptoVariable.
+		Add("custom", `自定义常量值。例如：-variables="key=123"，将formula中的变量{key}赋值为自定义123`).
+		Add("uuid", `特殊关键字。例如：-variables="key=uuid"，将formula中的变量{key}赋值为随机生成的UUID`).
+		Add("timestamp", `特殊关键字。例如：-variables="key=timestamp"，将formula中的变量{key}赋值为当前秒级时间戳"`).
+		Add("...", "扩展中，敬请期待...")
 }
 
 func executor() error {
 	formula := Command.GetOptionValue("formula").String()
-
-	fmt.Println("input formula: ", formula)
 	if formula == "" {
-		fmtx.Red.Println("formula加密公式可根据需求进行自定义，公式需由“加密函数”和“加密内容”两部分组成")
-		fmt.Println(fmtx.Cyan.String("加密函数："), `格式为：“加密函数(加密内容)”，加密函数可嵌套。例如：formula=md5(base64(abc))， 将文本“abc”先进行base64加密之后再进行md5加密`)
-		fmt.Println(fmtx.Cyan.String("加密内容："), `在formula中，加密内容可将“文本值”和“加密变量”拼接组合。例如：formula=md5(abc_{app_id})，变量{app_id}拼接“abc_”前缀之后再进行md5加密`)
-		fmt.Println(fmtx.Cyan.String("加密变量："), `在formula中，引用变量需要使用“{}”进行标识，并需要在variables中对相应变量进行赋值`)
+		Command.OptionsHelp()
+		fmt.Println("formula加密公式可根据不同需求进行自定义，完整加密公式由“加密函数+加密文本+加密变量”组成")
+		fmt.Println(fmtx.Cyan.String("加密函数："), `加密函数在formula中使用为：“func1(...func2(...)...)”，加密函数支持嵌套。例如：-formula=md5(base64(abc))，先将文本“abc”进行base64加密，然后再进行md5加密`)
+		fmt.Println(fmtx.Cyan.String("加密文本："), `加密文本可拼接在formula中的任意位置。例如：-formula=md5(abc_{app_id})，先将变量{app_id}拼接前缀“abc_”，然后再进行md5加密`)
+		fmt.Println(fmtx.Cyan.String("加密变量："), `加密变量需要在formula中使用“{}”进行标识，并在variables中使用键值对进行赋值`)
 		fmt.Println()
 
-		fmtx.Magenta.XPrintf(`%s函数使用：`, "formula")
-		enums.Print(fmtx.Green, enums.CryptoFunc)
+		fmt.Println(fmtx.Cyan.String("加密函数说明："))
+		enums.Print(fmtx.Green, CryptoFunc)
 		fmt.Println()
 
-		fmtx.Magenta.XPrintf(`%s变量使用：`, "variables")
-		enums.Print(fmtx.Green, enums.CryptoVariable)
+		fmt.Println(fmtx.Cyan.String("加密变量说明："))
+		enums.Print(fmtx.Green, CryptoVariable)
+		return nil
 	}
 
+	fmt.Println("加密公式: ", formula)
 	variables := Command.GetOptionValue("variables").String()
-	fmt.Println("input variables: ", variables)
-	params := stringx.ParseUrlParams(variables)
-	if len(params) > 0 {
-		var oldnew []string
+	fmt.Println("加密变量: ", variables)
+
+	var oldnew []string
+	oldnew = append(oldnew, "{uuid}", randx.UUID())
+	oldnew = append(oldnew, "{timestamp}", anyx.Int64Value(time.Now().Unix()).String())
+	if params := stringx.ParseUrlParams(variables); len(params) > 0 {
 		for k, v := range params {
 			switch strings.ToLower(v) {
 			case common.Uuid:
@@ -60,14 +82,13 @@ func executor() error {
 			case common.Timestamp:
 				v = anyx.Int64Value(time.Now().Unix()).String()
 			}
-			params[k] = v
 			oldnew = append(oldnew, "{"+k+"}", v)
 		}
-		formula = strings.NewReplacer(oldnew...).Replace(formula)
 	}
-	fmt.Println("actual formula: ", formula)
+	formula = strings.NewReplacer(oldnew...).Replace(formula)
+	fmt.Println("实际加密公式: ", formula)
 	var result = doCrypto(formula)
-	fmtx.Magenta.XPrintf("encrypt result: %s", result)
+	fmt.Println("加密结果: ", fmtx.Magenta.String(result))
 	// 开启复制
 	if Command.GetOptionValue("copy").Bool() {
 		if err := utils.WriteToClipboard(result); err != nil {
@@ -79,9 +100,9 @@ func executor() error {
 }
 
 // doCrypto 执行加密
-func doCrypto(formula string) (result string) {
+func doCrypto(formula string) string {
 	if funcName, start, end := getEncryptFuncAndIndex(formula); start > 0 {
-		text := formula[start:end]
+		text := formula[start+1 : end]
 		text = doCrypto(text)
 		switch funcName {
 		case "upper":
@@ -95,12 +116,10 @@ func doCrypto(formula string) (result string) {
 		case "base64":
 			text = encryptx.Base64Encode([]byte(text), true)
 		}
-		start -= len(funcName) + 1
-		result = formula[:start] + text + formula[end+1:]
-	} else {
-		result = formula
+		start -= len(funcName)
+		return formula[:start] + text + formula[end+1:]
 	}
-	return
+	return formula
 }
 
 // getEncryptFuncAndIndex 获取加密方法以及下标

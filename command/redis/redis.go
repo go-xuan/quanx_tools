@@ -2,13 +2,13 @@ package redis
 
 import (
 	"context"
-	"github.com/go-xuan/quanx/os/fmtx"
 	"time"
 
 	"github.com/go-xuan/quanx/core/configx"
 	"github.com/go-xuan/quanx/core/redisx"
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/os/flagx"
+	"github.com/go-xuan/quanx/os/fmtx"
 
 	"quanx_tools/command"
 )

@@ -26,7 +26,7 @@ func executor() error {
 	if args := Command.GetArgs(); len(args) > 0 && args[0] == "-h" {
 		Command.OptionsHelp()
 	}
-	var sql, outputPath, ifCopy = "", "beautify.sql", false
+	var sql, outputPath, doCopy = "", "beautify.sql", false
 	if path := Command.GetOptionValue("path").String(); path != "" {
 		path = filex.Pwd(path)
 		fmt.Println("目标SQL文件：", path)
@@ -44,30 +44,31 @@ func executor() error {
 			sql = string(bytes)
 			var dir, name, suffix = filex.Analyse(path)
 			outputPath = filepath.Join(dir, fmt.Sprintf("%s_fmt%s", name, suffix))
-			ifCopy = Command.GetOptionValue("copy").Bool()
+			doCopy = Command.GetOptionValue("copy").Bool()
 		}
 	} else if content, err := utils.ReadFromClipboard(); content != "" && err == nil {
-		sql, ifCopy = content, true
+		// 从粘贴板中获取当前复制内容
+		sql, doCopy = content, true
 	} else {
 		return errorx.Wrap(err, "获取SQL失败")
 	}
 	if len(sql) > 20 {
 		// 美化sql
 		var beautifySql = beautify.Parse(sql).Beautify()
-		fmt.Println("格式化SQL:")
+		fmt.Println("格式化后SQL:")
 		fmtx.Green.Println(beautifySql)
 
-		// 输出到粘贴板或者文件
-		if ifCopy {
+		// 输出格式化内容
+		if doCopy { // 写入粘贴板
 			if err := utils.WriteToClipboard(beautifySql); err != nil {
-				return errorx.Wrap(err, "复制SQL到粘贴板失败")
+				return errorx.Wrap(err, "格式化后SQL复制到粘贴板失败")
 			}
-			fmtx.Magenta.XPrintf("当前格式化SQL已复制到粘贴板\n")
-		} else {
-			fmt.Println("写入SQL文件:", outputPath)
+			fmt.Println("格式化后SQL已复制")
+		} else { // 写入文件
 			if err := filex.WriteFileString(outputPath, beautifySql); err != nil {
-				return errorx.Wrap(err, "写入SQL文件失败")
+				return errorx.Wrap(err, "格式化后SQL另存失败")
 			}
+			fmtx.Magenta.XPrintf("格式化后SQL已另存为:%s", outputPath)
 		}
 	}
 	return nil

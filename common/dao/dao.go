@@ -51,11 +51,11 @@ func TableQuery(source string, table string) (*model.TableQuery, error) {
 }
 
 // SqlExec 执行sql
-func SqlExec(name, sql string) (err error) {
-	if err = gormx.DB(name).Exec(sql).Error; err != nil {
+func SqlExec(name, sql string) error {
+	if err := gormx.DB(name).Exec(sql).Error; err != nil {
 		return errorx.Wrap(err, "执行sql失败")
 	}
-	return
+	return nil
 }
 
 // GetDBFieldDataList 查询表字段数据

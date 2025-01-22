@@ -13,6 +13,7 @@ import (
 	"quanx_tools/command/rand"
 	"quanx_tools/command/readme"
 	"quanx_tools/command/redis"
+	"quanx_tools/command/restic"
 	"quanx_tools/command/sql_fmt"
 	"quanx_tools/command/time"
 	"quanx_tools/command/tts"
@@ -26,7 +27,7 @@ func main() {
 		redis.Command,
 		readme.Command,
 		pwd.Command,
-		//restic.Command,
+		restic.Command,
 		tts.Command,
 		qr_code.Command,
 		sql_fmt.Command,

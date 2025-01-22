@@ -26,7 +26,7 @@ func executor() error {
 	// 读取配置文件
 	var config = &internal.Config{}
 	var configPath = Command.GetOptionValue("config").String()
-	if err := marshalx.UnmarshalFromFile(configPath, config); err != nil {
+	if err := marshalx.Apply(configPath).Read(configPath, config); err != nil {
 		return errorx.Wrap(err, "读取配置文件失败:"+configPath)
 	}
 
