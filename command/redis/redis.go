@@ -54,15 +54,15 @@ func executor() error {
 
 	var ctx = context.TODO()
 	if Command.GetOptionValue("delete").Bool() {
-		redisx.Client().Del(ctx, key)
+		redisx.GetClient().Del(ctx, key)
 	} else if Command.GetOptionValue("set").Bool() {
 		value := Command.GetOptionValue("value").String()
-		redisx.Client().Set(ctx, key, value, time.Minute)
+		redisx.GetClient().Set(ctx, key, value, time.Minute)
 	} else if Command.GetOptionValue("get").Bool() {
-		value := redisx.Client().Get(ctx, key)
+		value := redisx.GetClient().Get(ctx, key)
 		fmtx.Cyan.Printf("the value of %s is: %s", key, value)
 	}
-	if err := redisx.Client().Close(); err != nil {
+	if err := redisx.GetClient().Close(); err != nil {
 		return errorx.Wrap(err, "关闭redis连接失败")
 	}
 	return nil
