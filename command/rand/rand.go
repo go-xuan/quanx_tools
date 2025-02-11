@@ -2,6 +2,7 @@ package rand
 
 import (
 	"fmt"
+	"github.com/go-xuan/quanx/types/stringx"
 
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/os/flagx"
@@ -110,8 +111,9 @@ func executor() error {
 		return nil
 	}
 
-	args := Command.GetOptionValue("args").String()
-	if args == "" {
+	argsStr := Command.GetOptionValue("args").String()
+	args := stringx.ParseUrlParams(argsStr)
+	if len(args) > 0 {
 		if randType != "" {
 			if enum := MustArgsRandTypes.Get(randType); enum != nil {
 				fmtx.Magenta.XPrintf("当-type=%s时，-args参数不能为空!\n", randType)

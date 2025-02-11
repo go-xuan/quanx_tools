@@ -59,18 +59,16 @@ func SqlExec(name, sql string) error {
 }
 
 // GetDBFieldDataList 查询表字段数据
-func GetDBFieldDataList(args string) ([]string, error) {
-	params := stringx.ParseUrlParams(args)
-
+func GetDBFieldDataList(args map[string]string) ([]string, error) {
 	//初始化数据库连接
 	if err := configx.Execute(&gormx.Config{
 		Enable:   true,
-		Type:     params["type"],
-		Host:     params["host"],
-		Port:     stringx.ParseInt(params["port"]),
-		Username: params["username"],
-		Password: params["password"],
-		Database: params["database"],
+		Type:     args["type"],
+		Host:     args["host"],
+		Port:     stringx.ParseInt(args["port"]),
+		Username: args["username"],
+		Password: args["password"],
+		Database: args["database"],
 	}); err != nil {
 		return nil, errorx.Wrap(err, "database connection failed")
 	}
@@ -78,9 +76,9 @@ func GetDBFieldDataList(args string) ([]string, error) {
 
 	sb := strings.Builder{}
 	sb.WriteString(`select distinct `)
-	sb.WriteString(params["field"])
+	sb.WriteString(args["field"])
 	sb.WriteString(` from `)
-	sb.WriteString(params["table"])
+	sb.WriteString(args["table"])
 	sb.WriteString(" limit 100")
 	var result []string
 	if err := gormx.DB().Raw(sb.String()).Scan(&result).Error; err != nil {
