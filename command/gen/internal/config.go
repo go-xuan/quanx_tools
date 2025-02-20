@@ -12,7 +12,7 @@ import (
 	"github.com/go-xuan/quanx/os/filex"
 	"github.com/go-xuan/quanx/os/fmtx"
 	"github.com/go-xuan/quanx/types/stringx"
-	
+
 	embedTemplate "quanx_tools/command/gen/template"
 )
 
@@ -178,8 +178,8 @@ func (db DBConfig) GetModels(app string) ([]*Model, error) {
 		var models []*Model
 		for _, model := range modelMap {
 			for _, field := range model.Fields {
-				field.GoName = stringx.Fill(field.GoName, " ", model.FiledNameLen, true)
-				field.GoType = stringx.Fill(field.GoType, " ", model.FiledTypeLen, true)
+				field.GoName = stringx.Fill(field.GoName, " ", model.FiledNameLen)
+				field.GoType = stringx.Fill(field.GoType, " ", model.FiledTypeLen)
 			}
 			models = append(models, model)
 		}
