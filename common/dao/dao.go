@@ -3,7 +3,6 @@ package dao
 import (
 	"strings"
 
-	"github.com/go-xuan/quanx/core/configx"
 	"github.com/go-xuan/quanx/core/gormx"
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/types/stringx"
@@ -60,8 +59,7 @@ func SqlExec(name, sql string) error {
 
 // GetDBFieldDataList 查询表字段数据
 func GetDBFieldDataList(args map[string]string) ([]string, error) {
-	//初始化数据库连接
-	if err := configx.Execute(&gormx.Config{
+	conf := &gormx.Config{
 		Enable:   true,
 		Type:     args["type"],
 		Host:     args["host"],
@@ -69,7 +67,9 @@ func GetDBFieldDataList(args map[string]string) ([]string, error) {
 		Username: args["username"],
 		Password: args["password"],
 		Database: args["database"],
-	}); err != nil {
+	}
+	//初始化数据库连接
+	if err := conf.Execute(); err != nil {
 		return nil, errorx.Wrap(err, "database connection failed")
 	}
 	defer gormx.Close()

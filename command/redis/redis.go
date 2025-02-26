@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-xuan/quanx/core/configx"
 	"github.com/go-xuan/quanx/core/redisx"
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/os/flagx"
@@ -35,20 +34,17 @@ func executor() error {
 		fmtx.Red.Println("key is empty")
 		return nil
 	}
-	host := Command.GetOptionValue("host").String()
-	port := Command.GetOptionValue("port").Int()
-	password := Command.GetOptionValue("password").String()
-	db := Command.GetOptionValue("db").Int()
-	// 初始化
-	if err := configx.Execute(&redisx.Config{
+	redis := &redisx.Config{
 		Source:   "default",
 		Enable:   true,
-		Host:     host,
-		Port:     port,
-		Password: password,
-		Database: db,
+		Host:     Command.GetOptionValue("host").String(),
+		Port:     Command.GetOptionValue("port").Int(),
+		Password: Command.GetOptionValue("password").String(),
+		Database: Command.GetOptionValue("db").Int(),
 		PoolSize: 15,
-	}); err != nil {
+	}
+	// 初始化
+	if err := redis.Execute(); err != nil {
 		return errorx.Wrap(err, "初始化redis连接失败")
 	}
 

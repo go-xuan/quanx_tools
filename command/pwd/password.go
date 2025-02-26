@@ -3,6 +3,7 @@ package pwd
 import (
 	"fmt"
 	"io/fs"
+	"strconv"
 
 	"github.com/go-xuan/quanx/os/filex"
 	"github.com/go-xuan/quanx/os/flagx"
@@ -28,15 +29,17 @@ type Password struct {
 	Env      string `yaml:"env" json:"env"`           // 环境
 	Host     string `yaml:"host" json:"host"`         // host
 	Port     int    `yaml:"port" json:"port"`         // 端口
+	Database string `yaml:"database" json:"database"` // 数据库
 	Username string `yaml:"username" json:"username"` // 用户名
 	Password string `yaml:"password" json:"password"` // 密码
 }
 
 func (p *Password) ToString() string {
 	return fmtx.Yellow.XSPrintf(
-		"host: %s port: %s username: %s password: %s",
+		"host: %s port: %s database: %s username: %s password: %s",
 		stringx.Fill(p.Host, " ", 15),
-		p.Port,
+		strconv.Itoa(p.Port),
+		stringx.Fill(p.Database, " ", 15),
 		stringx.Fill(p.Username, " ", 10),
 		p.Password)
 }

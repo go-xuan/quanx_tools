@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/go-xuan/quanx/core/configx"
 	"github.com/go-xuan/quanx/core/gormx"
 	"github.com/go-xuan/quanx/os/errorx"
 	"github.com/go-xuan/quanx/os/filex"
@@ -51,7 +50,7 @@ func (db DBConfig) GormxDB() *gormx.Config {
 			Database: db.Database,
 			Schema:   db.Schema,
 		}
-		if err := configx.Execute(gormDB); err != nil {
+		if err := gormDB.Execute(); err != nil {
 			fmt.Println("连接数据库失败：", err)
 			return nil
 		}
