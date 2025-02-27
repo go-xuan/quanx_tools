@@ -102,7 +102,7 @@ func executor() error {
 	// 序列化方式
 	var method marshalx.Method
 	if Command.GetOptionValue("json").Bool() {
-		method = marshalx.Json()
+		method = marshalx.Json("    ")
 	} else if Command.GetOptionValue("yaml").Bool() {
 		method = marshalx.Yaml()
 	}
