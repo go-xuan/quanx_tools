@@ -14,7 +14,7 @@ var Command *flagx.Command
 func init() {
 	Command = flagx.NewCommand(command.Gen, "代码生成工具",
 		flagx.StringOption("config", "配置文件", "gen.yaml"),
-		flagx.BoolOption("check", "外置模板检测", false),
+		flagx.BoolOption("check", "检测外置模板", false),
 	).SetExecutor(executor)
 }
 
@@ -23,12 +23,12 @@ func executor() error {
 	var config = &internal.Config{}
 	var configPath = Command.GetOptionValue("config").String()
 	if err := marshalx.Apply(configPath).Read(configPath, config); err != nil {
-		return errorx.Wrap(err, "读取配置文件失败:"+configPath)
+		return errorx.Wrap(err, "配置文件读取失败:"+configPath)
 	}
-
+	// 检测外置模板
 	if Command.GetOptionValue("check").Bool() {
 		if err := config.ExternalTemplateCheck(); err != nil {
-			return errorx.Wrap(err, "检测模板文件失败")
+			return errorx.Wrap(err, "外置模板检测失败")
 		}
 		return nil
 	}
