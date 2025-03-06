@@ -5,8 +5,8 @@ import (
 	"runtime"
 
 	"github.com/atotto/clipboard"
-	"github.com/go-xuan/quanx/os/errorx"
-	"github.com/go-xuan/quanx/os/execx"
+	"github.com/go-xuan/quanx/base/errorx"
+	"github.com/go-xuan/quanx/base/execx"
 )
 
 func WriteToClipboard(text string) error {

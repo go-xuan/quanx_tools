@@ -1,8 +1,8 @@
 package gen
 
 import (
-	"github.com/go-xuan/quanx/os/errorx"
-	"github.com/go-xuan/quanx/os/flagx"
+	"github.com/go-xuan/quanx/base/errorx"
+	"github.com/go-xuan/quanx/base/flagx"
 	"github.com/go-xuan/quanx/utils/marshalx"
 
 	"quanx_tools/command"

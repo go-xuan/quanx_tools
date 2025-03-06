@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-xuan/quanx/core/redisx"
-	"github.com/go-xuan/quanx/os/errorx"
-	"github.com/go-xuan/quanx/os/flagx"
-	"github.com/go-xuan/quanx/os/fmtx"
+	"github.com/go-xuan/quanx/base/errorx"
+	"github.com/go-xuan/quanx/base/flagx"
+	"github.com/go-xuan/quanx/base/fmtx"
+	"github.com/go-xuan/quanx/extra/redisx"
 
 	"quanx_tools/command"
 )

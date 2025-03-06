@@ -3,7 +3,7 @@ package enums
 import (
 	"fmt"
 
-	"github.com/go-xuan/quanx/os/fmtx"
+	"github.com/go-xuan/quanx/base/fmtx"
 	"github.com/go-xuan/quanx/types/enumx"
 )
 

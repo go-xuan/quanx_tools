@@ -9,9 +9,9 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/go-xuan/quanx/os/errorx"
-	"github.com/go-xuan/quanx/os/filex"
-	"github.com/go-xuan/quanx/os/fmtx"
+	"github.com/go-xuan/quanx/base/errorx"
+	"github.com/go-xuan/quanx/base/filex"
+	"github.com/go-xuan/quanx/base/fmtx"
 	"github.com/go-xuan/quanx/types/stringx"
 
 	embedTemplate "quanx_tools/command/gen/template"

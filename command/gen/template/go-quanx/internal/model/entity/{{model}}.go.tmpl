@@ -12,7 +12,7 @@ type {{uc .Name}} struct {
 }
 
 func ({{uc .Name}}) TableName() string {
-	return "{{if eq $.Schema ""}}{{.Table}}{{else}}{{.Schema}}.{{.Table}}{{end}}"
+	return "{{if eq $.Schema "public"}}{{.Table}}{{else}}{{.Schema}}.{{.Table}}{{end}}"
 }
 
 func ({{uc .Name}}) TableComment() string {

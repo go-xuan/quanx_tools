@@ -1,8 +1,8 @@
 package internal
 
 import (
-	"github.com/go-xuan/quanx/core/gormx"
-	"github.com/go-xuan/quanx/os/errorx"
+	"github.com/go-xuan/quanx/base/errorx"
+	"github.com/go-xuan/quanx/extra/gormx"
 )
 
 // Generator 代码生成器

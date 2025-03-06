@@ -3,8 +3,8 @@ package dao
 import (
 	"strings"
 
-	"github.com/go-xuan/quanx/core/gormx"
-	"github.com/go-xuan/quanx/os/errorx"
+	"github.com/go-xuan/quanx/base/errorx"
+	"github.com/go-xuan/quanx/extra/gormx"
 	"github.com/go-xuan/quanx/types/stringx"
 
 	"quanx_tools/common/model"

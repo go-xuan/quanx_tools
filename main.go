@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/go-xuan/quanx/os/flagx"
+	"github.com/go-xuan/quanx/base/flagx"
 
 	"quanx_tools/command/copy"
 	"quanx_tools/command/encrypt"
