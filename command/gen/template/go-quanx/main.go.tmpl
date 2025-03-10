@@ -8,17 +8,13 @@ import (
 )
 
 func main() {
-	var engine = quanx.NewEngine()
-
-	// 注册gin路由
-	engine.AddGinRouter(router.BindApiRouter)
-	{{if .Models}}// 初始化表
-	engine.AddTable(
-		{{- range $model := .Models}}
-		&entity.{{uc $model.Name}}{},
-    	{{- end}}
-	){{end}}
-
-	// 初始化路由
-	engine.RUN()
+	quanx.NewEngine(
+	    quanx.EnableDebug(),                      // 开启debug
+	    quanx.AddGinRouter(router.BindApiRouter), // 注册gin路由
+	    quanx.AddTable(
+	    	{{- range $model := .Models}}
+        	&entity.{{uc $model.Name}}{}, {{if ne $model.Comment ""}} // {{$model.Comment}}{{end}}
+            {{- end}}
+	    ),
+	).RUN()
 }
