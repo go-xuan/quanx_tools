@@ -2,16 +2,16 @@ package time
 
 import (
 	"fmt"
-	"github.com/go-xuan/quanx/types/stringx"
-	"quanx_tools/common/utils"
 	"strings"
 	"time"
 
-	"github.com/go-xuan/quanx/os/flagx"
-	"github.com/go-xuan/quanx/os/fmtx"
+	"github.com/go-xuan/quanx/base/flagx"
+	"github.com/go-xuan/quanx/base/fmtx"
+	"github.com/go-xuan/quanx/types/stringx"
 	"github.com/go-xuan/quanx/types/timex"
 
 	"quanx_tools/command"
+	"quanx_tools/common/utils"
 )
 
 var Command *flagx.Command

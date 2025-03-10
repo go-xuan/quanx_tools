@@ -6,19 +6,19 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/go-xuan/quanx/core/configx"
-	"github.com/go-xuan/quanx/core/gormx"
-	"github.com/go-xuan/quanx/os/errorx"
-	"github.com/go-xuan/quanx/os/filex"
-	"github.com/go-xuan/quanx/os/fmtx"
+	"github.com/go-xuan/quanx/base/errorx"
+	"github.com/go-xuan/quanx/base/filex"
+	"github.com/go-xuan/quanx/base/fmtx"
+	"github.com/go-xuan/quanx/extra/gormx"
 	"github.com/go-xuan/quanx/types/stringx"
+
 	embedTemplate "quanx_tools/command/gen/template"
 )
 
 type Config struct {
 	App      string   `json:"app" json:"app" default:"demo"`         // 应用名
-	Frame    string   `json:"frame" yaml:"frame" default:"go-quanx"` // 代码框架（go-quanx/go-frame/spring-boot）
-	Template string   `json:"template" yaml:"template"`              // 自定义模板路径
+	Frame    string   `json:"frame" yaml:"frame" default:"go-quanx"` // 模板框架（go-quanx/go-frame/spring-boot）
+	Template string   `json:"template" yaml:"template"`              // 外置模板路径
 	Output   string   `json:"output" yaml:"output"`                  // 输出路径
 	DB       DBConfig `json:"db" yaml:"db"`                          // 数据库
 }
@@ -50,7 +50,7 @@ func (db DBConfig) GormxDB() *gormx.Config {
 			Database: db.Database,
 			Schema:   db.Schema,
 		}
-		if err := configx.Execute(gormDB); err != nil {
+		if err := gormDB.Execute(); err != nil {
 			fmt.Println("连接数据库失败：", err)
 			return nil
 		}
@@ -67,21 +67,30 @@ func (c *Config) Root() string {
 	}
 }
 
-func (c *Config) CheckTemplate() error {
-	// 获取代码生成的模板文件路径
-	var templateDir = stringx.IfZero(c.Template, TemplateDir)
-	if dir := filepath.Join(templateDir, c.Frame); filex.Exists(dir) {
+// ExternalTemplateCheck 外置模板检测
+func (c *Config) ExternalTemplateCheck() error {
+	fmt.Println("外置模板检测框架：", c.Frame)
+	dir := filepath.Join(stringx.IfZero(c.Template, TemplateDir), c.Frame)
+	fmtx.Green.XPrintf("外置模板检测路径：%s\n", dir)
+	if filex.Exists(dir) {
 		if files, err := filex.FileScan(dir, filex.OnlyFile); err == nil {
 			for _, file := range files {
-				if filex.GetSuffix(file.Path, true) != embedTemplate.Suffix {
-					if err = os.Rename(file.Path, file.Path+embedTemplate.Suffix); err != nil {
-						return errorx.Wrap(err, "检测模板文件失败："+file.Path)
+				path := file.Path
+				fmtx.Green.XPrintf("当前检测模板文件：%s\n", path)
+				if filex.GetSuffix(path, true) != embedTemplate.Suffix {
+					fmtx.Red.XPrintf("模板文件后缀异常：%s\n", path)
+					if err = os.Rename(path, path+embedTemplate.Suffix); err != nil {
+						return errorx.Wrap(err, "模板文件后缀矫正失败："+path)
+					} else {
+						fmtx.Red.Println("模板文件后缀矫正成功")
 					}
 				}
 			}
 		} else {
-			return errorx.Wrap(err, "扫描模板失败："+dir)
+			return errorx.Wrap(err, "模板扫描失败："+dir)
 		}
+	} else {
+		fmtx.Red.Println("未发现模板文件，请检查后重试！")
 	}
 	return nil
 }
@@ -90,10 +99,10 @@ func (c *Config) Generator() *Generator {
 	var generator = &Generator{App: c.App, Root: c.Root()}
 	// 获取代码生成模板文件
 	var templateDir = stringx.IfZero(c.Template, TemplateDir)
-	if files := CustomTemplateFiles(templateDir, c.Frame); len(files) > 0 {
-		fmt.Println("读取自定义模板：", templateDir, c.Frame)
+	if files := GetExternalTemplateFiles(templateDir, c.Frame); len(files) > 0 {
+		fmt.Println("读取外置模板：", templateDir, c.Frame)
 		generator.TmplFiles = files
-	} else if files = EmbedTemplateFiles(embedTemplate.FS, c.Frame, c.Frame); len(files) > 0 {
+	} else if files = GetInternalTemplateFiles(embedTemplate.FS, c.Frame, c.Frame); len(files) > 0 {
 		fmt.Println("读取内置模板：", c.Frame)
 		generator.TmplFiles = files
 	}
@@ -170,15 +179,15 @@ func (db DBConfig) GetModels(app string) ([]*Model, error) {
 					Fields:       []*Field{field},
 				}
 			}
-			if field.GoType == Time {
+			if field.GoType == GoTime {
 				modelMap[table].HasTime = true
 			}
 		}
 		var models []*Model
 		for _, model := range modelMap {
 			for _, field := range model.Fields {
-				field.GoName = stringx.Fill(field.GoName, " ", model.FiledNameLen, true)
-				field.GoType = stringx.Fill(field.GoType, " ", model.FiledTypeLen, true)
+				field.GoName = stringx.Fill(field.GoName, " ", model.FiledNameLen)
+				field.GoType = stringx.Fill(field.GoType, " ", model.FiledTypeLen)
 			}
 			models = append(models, model)
 		}

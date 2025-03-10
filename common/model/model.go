@@ -62,10 +62,10 @@ type TableField struct {
 type RandFieldList []*RandField
 
 type RandField struct {
-	Name       string `json:"name"`       // 字段名
-	Type       string `json:"type"`       // 数据类型
-	Default    string `json:"default"`    // 默认值
-	Constraint string `json:"constraint"` // 随机生成约束参数
+	Name    string            `json:"name"`    // 字段名
+	Type    string            `json:"type"`    // 数据类型
+	Default string            `json:"default"` // 默认值
+	Args    map[string]string `json:"args"`    // 约束参数
 }
 
 // RandField 将表字段结构体转为随机字段结构体
@@ -77,14 +77,14 @@ func (f *TableField) RandField() *RandField {
 	}
 }
 
-func (list RandFieldList) RandResult(enums map[string][]string) (result map[string]string) {
-	result = make(map[string]string)
+func (list RandFieldList) RandResult(enums map[string][]string) map[string]string {
+	result := make(map[string]string)
 	for index, field := range list {
 		var value string
 		if field.Default == "" {
 			var randModel = &randx.Options{
 				Type:    field.Type,
-				Args:    randx.NewArgs(field.Constraint),
+				Args:    randx.NewArgs(field.Args),
 				Default: field.Default,
 				Offset:  index,
 				Enums:   enums[field.Name],
@@ -95,5 +95,5 @@ func (list RandFieldList) RandResult(enums map[string][]string) (result map[stri
 		}
 		result[field.Name] = value
 	}
-	return
+	return result
 }

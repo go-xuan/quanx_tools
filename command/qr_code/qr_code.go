@@ -1,15 +1,16 @@
 package qr_code
 
 import (
+	"fmt"
+	"github.com/go-xuan/quanx/utils/treex"
 	"image/color"
 	"path/filepath"
 
-	"github.com/go-xuan/quanx/os/errorx"
-	"github.com/go-xuan/quanx/os/filex"
-	"github.com/go-xuan/quanx/os/flagx"
-	"github.com/go-xuan/quanx/os/fmtx"
+	"github.com/go-xuan/quanx/base/errorx"
+	"github.com/go-xuan/quanx/base/filex"
+	"github.com/go-xuan/quanx/base/flagx"
+	"github.com/go-xuan/quanx/base/fmtx"
 	"github.com/go-xuan/quanx/utils/idx"
-	"github.com/go-xuan/quanx/utils/treex"
 	"github.com/skip2/go-qrcode"
 
 	"quanx_tools/command"
@@ -20,20 +21,22 @@ var Command *flagx.Command
 
 func init() {
 	Command = flagx.NewCommand(command.QrCode, "生成二维码",
-		flagx.StringOption("content", "二维码内容", "123"),
-		flagx.IntOption("size", "二维码大小", 600),
+		flagx.StringOption("content", "二维码内容", ""),
+		flagx.IntOption("size", "二维码大小", 900),
 		flagx.BoolOption("copy", "复制粘贴", false),
 	).SetExecutor(executor)
 }
 
 func executor() error {
 	content := Command.GetOptionValue("content").String()
-	size := Command.GetOptionValue("size").Int(600)
-	if content != "" {
-		content = treex.Trie().Desensitize(content)
+	size := Command.GetOptionValue("size").Int()
+	if content == "" {
+		Command.OptionsHelp()
+		return nil
 	}
+	content = treex.Trie().Desensitize(content)
 	var name = idx.SnowFlake().String()
-	path := filepath.Join("qrCode", name+".png")
+	path := filepath.Join(command.QrCode, name+".png")
 	filex.CreateIfNotExist(path)
 	if err := qrcode.WriteColorFile(
 		content,        // 文本内容
@@ -45,7 +48,8 @@ func executor() error {
 	); err != nil {
 		return errorx.Wrap(err, "生成二维码失败")
 	}
-	fmtx.Blue.XPrintf("二维码保存至：%s", path)
+	path = filex.Pwd(path)
+	fmt.Println("二维码已保存至", fmtx.Yellow.String(path))
 	if Command.GetOptionValue("copy").Bool() {
 		if err := utils.WriteToClipboard(path); err != nil {
 			return errorx.Wrap(err, "复制值二维码文件路径失败")

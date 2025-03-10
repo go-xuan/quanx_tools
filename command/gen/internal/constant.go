@@ -2,7 +2,7 @@ package internal
 
 const (
 	// OverwriteTag header
-	OverwriteTag = "// This file will be overwritten on re-execution."
+	OverwriteTag = "// this file will be overwritten when execute gen command next."
 	TemplateDir  = "template"
 	// EmptyData DataType
 	EmptyData     = "empty"     // 空代码文件

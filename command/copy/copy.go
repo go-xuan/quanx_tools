@@ -1,10 +1,11 @@
 package copy
 
 import (
-	"github.com/go-xuan/quanx/net/ipx"
-	"github.com/go-xuan/quanx/os/errorx"
-	"github.com/go-xuan/quanx/os/flagx"
-	"github.com/go-xuan/quanx/os/fmtx"
+	"github.com/go-xuan/quanx/base/errorx"
+	"github.com/go-xuan/quanx/base/flagx"
+	"github.com/go-xuan/quanx/base/fmtx"
+	"github.com/go-xuan/quanx/base/ipx"
+
 	"quanx_tools/command"
 	"quanx_tools/common/utils"
 )

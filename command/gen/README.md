@@ -57,7 +57,7 @@ db:
 - 代码生成工具仅内置了go-quanx的框架模版，可直接使用。在工具执行时，如果外部模板根路径下存在同名框架模板，则会优先根据外部模板生成代码。
 - 代码生成工具完全按照模板内自定义配置的目录结构进行代码生成，生成后的代码目录结构与模板目录保持一致， 例如：模板文件{{templateDir}}/{{frame}}/config/config.yaml.tmpl生成的代码为：{{output}}/{{app}}/config/config.yaml
 - 代码生成工具会根据模板文件名是否包含{{model}}占位符，判断是否需要进行表结构遍历，以便基于表结构生成相应代码，例：数据库如果存在aaa、bbb、ccc三张表，则会对应生成aaa.go、bbb.go、ccc.go 代码
-- 模板文件第一行加上“// This file will be overwritten on re-execution.”注释，下次执行代码生成工具时，识别到此行注释则会进行覆盖。
+- 模板文件第一行加上“// this file will be overwritten when execute gen command next.”注释，下次执行代码生成工具时，识别到此行注释则会进行覆盖。
 
 ## 模板目录结构
 - 以下模板目录结构仅为示例
@@ -168,11 +168,11 @@ router.POST("/api/v1/{{path .Name}}", {{uc .Name}}Handler)
 ```
 
 ### 模板文件覆盖
-- 对于和表结构强关联的代码，可在模板文件首行添加“// This file will be overwritten on re-execution.”注释，下次代码生成工具重新执行的时候则会对该文件内容进行重写。
+- 对于和表结构强关联的代码，可在模板文件首行添加“// this file will be overwritten when execute gen command next.”注释，下次代码生成工具重新执行的时候则会对该文件内容进行重写。
 - 如果想在下次执行中不受重写影响，则需要移除此行注释
 
 ```gotemplate
-// This file will be overwritten on re-execution.
+// this file will be overwritten when execute gen command next.
 
 package sqlx_model
 

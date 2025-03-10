@@ -3,9 +3,8 @@ package dao
 import (
 	"strings"
 
-	"github.com/go-xuan/quanx/core/configx"
-	"github.com/go-xuan/quanx/core/gormx"
-	"github.com/go-xuan/quanx/os/errorx"
+	"github.com/go-xuan/quanx/base/errorx"
+	"github.com/go-xuan/quanx/extra/gormx"
 	"github.com/go-xuan/quanx/types/stringx"
 
 	"quanx_tools/common/model"
@@ -51,36 +50,35 @@ func TableQuery(source string, table string) (*model.TableQuery, error) {
 }
 
 // SqlExec 执行sql
-func SqlExec(name, sql string) (err error) {
-	if err = gormx.DB(name).Exec(sql).Error; err != nil {
+func SqlExec(name, sql string) error {
+	if err := gormx.DB(name).Exec(sql).Error; err != nil {
 		return errorx.Wrap(err, "执行sql失败")
 	}
-	return
+	return nil
 }
 
 // GetDBFieldDataList 查询表字段数据
-func GetDBFieldDataList(args string) ([]string, error) {
-	params := stringx.ParseUrlParams(args)
-
-	//初始化数据库连接
-	if err := configx.Execute(&gormx.Config{
+func GetDBFieldDataList(args map[string]string) ([]string, error) {
+	conf := &gormx.Config{
 		Enable:   true,
-		Type:     params["type"],
-		Host:     params["host"],
-		Port:     stringx.ParseInt(params["port"]),
-		Username: params["username"],
-		Password: params["password"],
-		Database: params["database"],
-	}); err != nil {
+		Type:     args["type"],
+		Host:     args["host"],
+		Port:     stringx.ParseInt(args["port"]),
+		Username: args["username"],
+		Password: args["password"],
+		Database: args["database"],
+	}
+	//初始化数据库连接
+	if err := conf.Execute(); err != nil {
 		return nil, errorx.Wrap(err, "database connection failed")
 	}
 	defer gormx.Close()
 
 	sb := strings.Builder{}
 	sb.WriteString(`select distinct `)
-	sb.WriteString(params["field"])
+	sb.WriteString(args["field"])
 	sb.WriteString(` from `)
-	sb.WriteString(params["table"])
+	sb.WriteString(args["table"])
 	sb.WriteString(" limit 100")
 	var result []string
 	if err := gormx.DB().Raw(sb.String()).Scan(&result).Error; err != nil {

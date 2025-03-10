@@ -1,18 +1,18 @@
-// This file will be overwritten on re-execution.
+// this file will be overwritten when execute gen command next.
 
 package entity
 
-{{if .HasTime}}import "time"{{else}}{{end}}
+{{if .HasTime}}import "time"{{end}}
 
 // {{uc .Name}} is the go struct for table {{if eq $.Schema "public"}}{{.Table}}{{else}}{{.Schema}}.{{.Table}}{{end}}.
 type {{uc .Name}} struct {
 	{{- range $field := .Fields}}
-	{{$field.GoName}} {{$field.GoType}} `json:"{{lc $field.Name}}" gorm:"type:{{$field.GormType}};{{if $field.Nullable}}{{else}} not null;{{end}}{{if eq $field.Default ""}}{{else}} default:{{$field.Default}};{{end}} comment:{{$field.Comment}};"`
+	{{$field.GoName}} {{$field.GoType}} `json:"{{lc $field.Name}}" gorm:"type:{{$field.GormType}};{{if $field.Nullable}}{{else}} not null;{{end}}{{if ne $field.Default ""}} default:{{$field.Default}};{{end}} comment:{{$field.Comment}};"`
 	{{- end }}
 }
 
 func ({{uc .Name}}) TableName() string {
-	return "{{if eq $.Schema ""}}{{.Table}}{{else}}{{.Schema}}.{{.Table}}{{end}}"
+	return "{{if eq $.Schema "public"}}{{.Table}}{{else}}{{.Schema}}.{{.Table}}{{end}}"
 }
 
 func ({{uc .Name}}) TableComment() string {

@@ -2,13 +2,12 @@ package redis
 
 import (
 	"context"
-	"github.com/go-xuan/quanx/os/fmtx"
 	"time"
 
-	"github.com/go-xuan/quanx/core/configx"
-	"github.com/go-xuan/quanx/core/redisx"
-	"github.com/go-xuan/quanx/os/errorx"
-	"github.com/go-xuan/quanx/os/flagx"
+	"github.com/go-xuan/quanx/base/errorx"
+	"github.com/go-xuan/quanx/base/flagx"
+	"github.com/go-xuan/quanx/base/fmtx"
+	"github.com/go-xuan/quanx/extra/redisx"
 
 	"quanx_tools/command"
 )
@@ -35,34 +34,31 @@ func executor() error {
 		fmtx.Red.Println("key is empty")
 		return nil
 	}
-	host := Command.GetOptionValue("host").String()
-	port := Command.GetOptionValue("port").Int()
-	password := Command.GetOptionValue("password").String()
-	db := Command.GetOptionValue("db").Int()
-	// 初始化
-	if err := configx.Execute(&redisx.Config{
+	redis := &redisx.Config{
 		Source:   "default",
 		Enable:   true,
-		Host:     host,
-		Port:     port,
-		Password: password,
-		Database: db,
+		Host:     Command.GetOptionValue("host").String(),
+		Port:     Command.GetOptionValue("port").Int(),
+		Password: Command.GetOptionValue("password").String(),
+		Database: Command.GetOptionValue("db").Int(),
 		PoolSize: 15,
-	}); err != nil {
+	}
+	// 初始化
+	if err := redis.Execute(); err != nil {
 		return errorx.Wrap(err, "初始化redis连接失败")
 	}
 
 	var ctx = context.TODO()
 	if Command.GetOptionValue("delete").Bool() {
-		redisx.Client().Del(ctx, key)
+		redisx.GetClient().Del(ctx, key)
 	} else if Command.GetOptionValue("set").Bool() {
 		value := Command.GetOptionValue("value").String()
-		redisx.Client().Set(ctx, key, value, time.Minute)
+		redisx.GetClient().Set(ctx, key, value, time.Minute)
 	} else if Command.GetOptionValue("get").Bool() {
-		value := redisx.Client().Get(ctx, key)
+		value := redisx.GetClient().Get(ctx, key)
 		fmtx.Cyan.Printf("the value of %s is: %s", key, value)
 	}
-	if err := redisx.Client().Close(); err != nil {
+	if err := redisx.GetClient().Close(); err != nil {
 		return errorx.Wrap(err, "关闭redis连接失败")
 	}
 	return nil

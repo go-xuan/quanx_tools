@@ -9,9 +9,9 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/go-xuan/quanx/os/errorx"
-	"github.com/go-xuan/quanx/os/filex"
-	"github.com/go-xuan/quanx/os/fmtx"
+	"github.com/go-xuan/quanx/base/errorx"
+	"github.com/go-xuan/quanx/base/filex"
+	"github.com/go-xuan/quanx/base/fmtx"
 	"github.com/go-xuan/quanx/types/stringx"
 
 	embedTemplate "quanx_tools/command/gen/template"
@@ -67,22 +67,20 @@ func (t *TemplateFile) WriteDataToFile(root string, data any, model ...string) e
 	return nil
 }
 
-// CustomTemplateFiles 获取自定义模板
-func CustomTemplateFiles(dir, frame string) []*TemplateFile {
-	//先从外部template文件夹
-	if fDir := filepath.Join(dir, frame); filex.Exists(fDir) {
-		if files, err := filex.FileScan(fDir, filex.OnlyFile); err == nil {
+// GetExternalTemplateFiles 获取外置模板
+func GetExternalTemplateFiles(dir, frame string) []*TemplateFile {
+	if path := filepath.Join(dir, frame); filex.Exists(path) {
+		if files, err := filex.FileScan(path, filex.OnlyFile); err == nil {
 			for _, file := range files {
 				dataType := GeneratorData
 				if strings.Contains(file.Info.Name(), "{{model}}") {
 					dataType = ModelData
 				}
 				var content, _ = filex.ReadFile(file.Path)
-				path := strings.TrimPrefix(file.Path, dir+string(os.PathSeparator))
 				var templates []*TemplateFile
 				templates = append(templates, &TemplateFile{
 					Frame:    frame,
-					Path:     path,
+					Path:     strings.TrimPrefix(file.Path, dir+string(os.PathSeparator)),
 					Content:  string(content),
 					DataType: dataType,
 					FuncMap:  funcs,
@@ -94,14 +92,14 @@ func CustomTemplateFiles(dir, frame string) []*TemplateFile {
 	return nil
 }
 
-// EmbedTemplateFiles 获取内置模板
-func EmbedTemplateFiles(fs embed.FS, dir, frame string) []*TemplateFile {
+// GetInternalTemplateFiles 获取内置模板
+func GetInternalTemplateFiles(fs embed.FS, dir, frame string) []*TemplateFile {
 	var templates []*TemplateFile
 	if entries, err := fs.ReadDir(dir); err == nil {
 		for _, entry := range entries {
 			if entry.IsDir() {
 				var entryDir = filepath.Join(dir, entry.Name())
-				templates = append(templates, EmbedTemplateFiles(fs, entryDir, frame)...)
+				templates = append(templates, GetInternalTemplateFiles(fs, entryDir, frame)...)
 			} else {
 				var fileName, dataType = entry.Name(), GeneratorData
 				if strings.Contains(fileName, "{{model}}") {
