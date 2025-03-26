@@ -37,10 +37,10 @@ type Password struct {
 func (p *Password) ToString() string {
 	return fmtx.Yellow.XSPrintf(
 		"host: %s port: %s database: %s username: %s password: %s",
-		stringx.Fill(p.Host, " ", 15),
+		stringx.Fill(p.Host, " ", 100),
 		strconv.Itoa(p.Port),
-		stringx.Fill(p.Database, " ", 15),
-		stringx.Fill(p.Username, " ", 10),
+		stringx.Fill(p.Database, " ", 20),
+		stringx.Fill(p.Username, " ", 20),
 		p.Password)
 }
 
@@ -100,24 +100,24 @@ func executor() error {
 	}
 
 	// 序列化方式
-	var method marshalx.Method
+	var marshal marshalx.Method
 	if Command.GetOptionValue("json").Bool() {
-		method = marshalx.Json("    ")
+		marshal = marshalx.Json("    ")
 	} else if Command.GetOptionValue("yaml").Bool() {
-		method = marshalx.Yaml()
+		marshal = marshalx.Yaml()
 	}
 
 	if enum != nil {
 		if pwd := enum.Get(Command.GetOptionValue("env").String()); pwd != nil {
-			if method != nil {
-				bytes, _ := method.Marshal(pwd)
+			if marshal != nil {
+				bytes, _ := marshal.Marshal(pwd)
 				fmt.Println(string(bytes))
 			} else {
 				fmt.Println(pwd.ToString())
 			}
 		} else {
-			if method != nil {
-				bytes, _ := method.Marshal(enum.Values())
+			if marshal != nil {
+				bytes, _ := marshal.Marshal(enum.Values())
 				fmt.Println(string(bytes))
 			} else {
 				for _, k := range enum.Keys() {

@@ -7,10 +7,6 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/net/goai"
 	"github.com/gogf/gf/v2/os/gcmd"
-	"redbird.hub/redbird/micro-app-public/middleware/auth"
-	"redbird.hub/redbird/micro-app-public/util/app_pub"
-	"redbird.hub/redbird/micro-public/global/global_config"
-	"redbird.hub/redbird/micro-public/util/server_util"
 
 	"{{.App}}/internal/consts"
 	"{{.App}}/internal/router"
@@ -22,27 +18,23 @@ var (
 		Usage: "main",
 		Brief: "start http server",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			s := g.Server()
+			server := g.Server()
 			// 对整个服务进行初始化
-			server_util.InitServerConfig(ctx, consts.OpenAPIServerName, s)
-			// 初始化公共接口
-			app_pub.InitServerConfig(ctx)
-			s.Group("/"+global_config.ServerName(), func(group *ghttp.RouterGroup) {
+			server.Group("/"+global_config.ServerName(), func(group *ghttp.RouterGroup) {
 				group.Middleware(
-					auth.Middleware().CORS, // 跨域处理
-					auth.Middleware().Ctx,  // 上下文
+
 				)
 				router.BindController(group) // 绑定路由
 			})
-			enhanceOpenAPIDoc(s)
-			s.Run()
+			enhanceOpenAPIDoc(server)
+			server.Run()
 			return
 		},
 	}
 )
 
-func enhanceOpenAPIDoc(s *ghttp.Server) {
-	openapi := s.GetOpenApi()
+func enhanceOpenAPIDoc(server *ghttp.Server) {
+	openapi := server.GetOpenApi()
 	openapi.Config.CommonResponse = ghttp.DefaultHandlerResponse{}
 	openapi.Config.CommonResponseDataField = `Data`
 

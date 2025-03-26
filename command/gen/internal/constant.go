@@ -12,7 +12,6 @@ const (
 
 // 数据库-数据类型
 const (
-	String     = "string"        // 字符串
 	Text       = "text"          // 文本
 	Varchar    = "varchar"       // 字符
 	Varchar100 = "varchar(100)"  // 100字符串
@@ -27,7 +26,7 @@ const (
 	Bigint     = "bigint"        // 大整数
 	Float      = "float"         // 浮点数
 	Float4     = "float4"        // 浮点数
-	Float64    = "float64"       // 64位浮点数
+	Float8     = "float8"        // 浮点数
 	Decimal    = "decimal"       // 十进制数
 	Sequence   = "sequence"      // 序列
 	Bool       = "bool"          // 布尔
@@ -86,7 +85,7 @@ func DB2GoType(t string) string {
 		return GoInt
 	case Int8, Bigint:
 		return GoInt64
-	case Float, Float4, Numeric:
+	case Float, Float4, Float8, Numeric:
 		return GoFloat64
 	case Timestamp, Timestampz, Datetime, Time, Date:
 		return GoTime

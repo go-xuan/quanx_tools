@@ -71,13 +71,14 @@ func (t *TemplateFile) WriteDataToFile(root string, data any, model ...string) e
 func GetExternalTemplateFiles(dir, frame string) []*TemplateFile {
 	if path := filepath.Join(dir, frame); filex.Exists(path) {
 		if files, err := filex.FileScan(path, filex.OnlyFile); err == nil {
+			var templates []*TemplateFile
 			for _, file := range files {
-				dataType := GeneratorData
-				if strings.Contains(file.Info.Name(), "{{model}}") {
+				var fileName, dataType = file.Info.Name(), GeneratorData
+				if strings.Contains(fileName, "{{model}}") {
 					dataType = ModelData
 				}
 				var content, _ = filex.ReadFile(file.Path)
-				var templates []*TemplateFile
+
 				templates = append(templates, &TemplateFile{
 					Frame:    frame,
 					Path:     strings.TrimPrefix(file.Path, dir+string(os.PathSeparator)),
@@ -85,8 +86,8 @@ func GetExternalTemplateFiles(dir, frame string) []*TemplateFile {
 					DataType: dataType,
 					FuncMap:  funcs,
 				})
-				return templates
 			}
+			return templates
 		}
 	}
 	return nil
