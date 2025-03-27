@@ -55,7 +55,7 @@ func init() {
 		flagx.StringOption("env", "选择环境", ""),
 	).SetExecutor(executor)
 
-	var enumMap = make(map[string]*enumx.StringEnum[*Password])
+	var enumMap = make(map[string]*enumx.Enum[string, *Password])
 	enumMap["pgsql"] = PgsqlPwdEnum
 	enumMap["mysql"] = MysqlPwdEnum
 	enumMap["redis"] = RedisPwdEnum
@@ -85,7 +85,7 @@ func init() {
 }
 
 func executor() error {
-	var enum *enumx.StringEnum[*Password]
+	var enum *enumx.Enum[string, *Password]
 	if Command.GetOptionValue("pgsql").Bool() {
 		enum = PgsqlPwdEnum
 	} else if Command.GetOptionValue("mysql").Bool() {

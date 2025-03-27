@@ -11,7 +11,7 @@ import (
 	"github.com/go-xuan/quanx/types/anyx"
 	"github.com/go-xuan/quanx/types/enumx"
 	"github.com/go-xuan/quanx/types/stringx"
-	"github.com/go-xuan/quanx/utils/encryptx"
+	"github.com/go-xuan/quanx/utils/cryptx"
 	"github.com/go-xuan/quanx/utils/randx"
 
 	"quanx_tools/command"
@@ -112,9 +112,9 @@ func doCrypto(formula string) string {
 		case "reverse":
 			text = stringx.Reverse(text)
 		case "md5":
-			text = encryptx.MD5(text)
+			text = cryptx.MD5(text)
 		case "base64":
-			text = encryptx.Base64Encode([]byte(text), true)
+			text = cryptx.Base64Encode([]byte(text), true)
 		}
 		start -= len(funcName)
 		return formula[:start] + text + formula[end+1:]

@@ -2,12 +2,12 @@ package rand
 
 import (
 	"fmt"
-	"github.com/go-xuan/quanx/types/stringx"
 
 	"github.com/go-xuan/quanx/base/errorx"
 	"github.com/go-xuan/quanx/base/flagx"
 	"github.com/go-xuan/quanx/base/fmtx"
 	"github.com/go-xuan/quanx/types/enumx"
+	"github.com/go-xuan/quanx/types/stringx"
 	"github.com/go-xuan/quanx/utils/randx"
 
 	"quanx_tools/command"
@@ -22,7 +22,7 @@ var (
 	allRandTypes      = enumx.NewStringEnum[string]()
 	allRandArgs       = enumx.NewStringEnum[string]()
 	argsExamples      = enumx.NewStringEnum[string]()
-	MustArgsRandTypes = enumx.NewStringEnum[*enumx.StringEnum[string]]()
+	MustArgsRandTypes = enumx.NewStringEnum[*enumx.Enum[string, string]]()
 )
 
 func init() {
