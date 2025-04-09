@@ -2,6 +2,11 @@ module quanx_tools
 
 go 1.18
 
+replace (
+	github.com/go-xuan/quanx v1.25.8 => ../quanx
+)
+
+
 require (
 	github.com/atotto/clipboard v0.1.4
 	github.com/go-ole/go-ole v1.3.0

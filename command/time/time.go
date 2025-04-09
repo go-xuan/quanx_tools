@@ -26,7 +26,7 @@ func init() {
 // 时间解析器
 func executor() error {
 	var now = time.Now()
-	fmtx.Magenta.XPrintf("现在的时间是%s，时间戳是%v，%s年，星期%s，今天已过%v秒，今年已过%v天\n",
+	fmtx.Magenta.Xprintf("现在的时间是%s，时间戳是%v，%s年，星期%s，今天已过%v秒，今年已过%v天\n",
 		now.Format(timex.TimeFmt),
 		now.UnixMilli(),
 		timex.ShengXiao(now.Year()),
@@ -56,7 +56,7 @@ func executor() error {
 	}
 	if !inputTime.IsZero() {
 		fmtStr, unixMilli := inputTime.Format("2006-01-02 15:04:05.999"), inputTime.UnixMilli()
-		fmtx.Cyan.XPrintf("输入的时间是%s，时间戳是%v，%s年，星期%s，距离今天%v年，%v月，%v天\n",
+		fmtx.Cyan.Xprintf("输入的时间是%s，时间戳是%v，%s年，星期%s，距离今天%v年，%v月，%v天\n",
 			fmtStr,
 			unixMilli,
 			timex.ShengXiao(inputTime.Year()),
@@ -66,7 +66,7 @@ func executor() error {
 			timex.TimeDiff(inputTime, now, timex.Day),
 		)
 	} else {
-		fmtx.Green.XPrintf("可使用%s参数，解析任意时间字符串。", "-str")
+		fmtx.Green.Xprintf("可使用%s参数，解析任意时间字符串。", "-str")
 		fmt.Printf(`例如：-str="%s"`, timex.NowString())
 		fmt.Println()
 	}

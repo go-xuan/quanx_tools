@@ -71,14 +71,14 @@ func (c *Config) Root() string {
 func (c *Config) ExternalTemplateCheck() error {
 	fmt.Println("外置模板检测框架：", c.Frame)
 	dir := filepath.Join(stringx.IfZero(c.Template, TemplateDir), c.Frame)
-	fmtx.Green.XPrintf("外置模板检测路径：%s\n", dir)
+	fmtx.Green.Xprintf("外置模板检测路径：%s\n", dir)
 	if filex.Exists(dir) {
 		if files, err := filex.FileScan(dir, filex.OnlyFile); err == nil {
 			for _, file := range files {
 				path := file.Path
-				fmtx.Green.XPrintf("当前检测模板文件：%s\n", path)
+				fmtx.Green.Xprintf("当前检测模板文件：%s\n", path)
 				if filex.GetSuffix(path, true) != embedTemplate.Suffix {
-					fmtx.Red.XPrintf("模板文件后缀异常：%s\n", path)
+					fmtx.Red.Xprintf("模板文件后缀异常：%s\n", path)
 					if err = os.Rename(path, path+embedTemplate.Suffix); err != nil {
 						return errorx.Wrap(err, "模板文件后缀矫正失败："+path)
 					} else {
@@ -112,7 +112,7 @@ func (c *Config) Generator() *Generator {
 		if models, err := c.DB.GetModels(c.App); err == nil {
 			generator.Models = models
 		} else {
-			fmtx.Red.XPrintf("查询数据库表模型失败: %s \n", err.Error())
+			fmtx.Red.Xprintf("查询数据库表模型失败: %s \n", err.Error())
 		}
 	}
 	return generator
@@ -142,7 +142,7 @@ func (db DBConfig) GetModels(app string) ([]*Model, error) {
 		return nil, errorx.New("数据库类型（db.type）只支持mysql或者postgres")
 	}
 	var fields []*Field
-	if err := gormx.DB().Raw(sql).Scan(&fields).Error; err != nil {
+	if err := gormx.GetInstance().Raw(sql).Scan(&fields).Error; err != nil {
 		return nil, errorx.Wrap(err, "查询表字段列表失败")
 	}
 	if len(fields) > 0 {

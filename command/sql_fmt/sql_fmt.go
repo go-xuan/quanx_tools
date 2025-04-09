@@ -19,9 +19,10 @@ var Command *flagx.Command
 func init() {
 	Command = flagx.NewCommand(command.SqlFmt, "SQL格式化工具",
 		flagx.StringOption("path", "SQL文件路径", ""),
-		flagx.BoolOption("copy", "复制粘贴", false),
+		flagx.BoolOption("copy", "复制结果值", false),
 	).SetExecutor(executor)
 }
+
 func executor() error {
 	if args := Command.GetArgs(); len(args) > 0 && args[0] == "-h" {
 		Command.OptionsHelp()
@@ -68,7 +69,7 @@ func executor() error {
 			if err := filex.WriteFileString(outputPath, beautifySql); err != nil {
 				return errorx.Wrap(err, "格式化后SQL另存失败")
 			}
-			fmtx.Magenta.XPrintf("格式化后SQL已另存为:%s", outputPath)
+			fmtx.Magenta.Xprintf("格式化后SQL已另存为:%s", outputPath)
 		}
 	}
 	return nil
