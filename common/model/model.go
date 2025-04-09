@@ -1,8 +1,6 @@
 package model
 
 import (
-	"strings"
-
 	"github.com/go-xuan/quanx/utils/randx"
 
 	"quanx_tools/common"
@@ -14,24 +12,6 @@ type TableQuery struct {
 	Schema   string `json:"schema"`   // schema
 	Table    string `json:"table"`    // 表名
 	Columns  string `json:"columns"`  // 字段名
-}
-
-// TableInfo 表基本信息
-type TableInfo struct {
-	Source   string   `json:"source"`   // 数据源
-	Database string   `json:"database"` // 数据库名
-	Schema   string   `json:"schema"`   // schema
-	Table    string   `json:"table"`    // 表名
-	Columns  []string `json:"columns"`  // 字段名
-}
-
-func (t *TableQuery) ToTableInfo() *TableInfo {
-	return &TableInfo{
-		Database: t.Database,
-		Schema:   t.Schema,
-		Table:    t.Table,
-		Columns:  strings.Split(t.Columns, ","),
-	}
 }
 
 // TableDetail 表明细
@@ -58,9 +38,6 @@ type TableField struct {
 	TableComment string `json:"tableComment"`          // 表注释
 }
 
-// RandFieldList 随机数生成字段配置
-type RandFieldList []*RandField
-
 type RandField struct {
 	Name    string            `json:"name"`    // 字段名
 	Type    string            `json:"type"`    // 数据类型
@@ -77,6 +54,9 @@ func (f *TableField) RandField() *RandField {
 	}
 }
 
+// RandFieldList 随机数生成字段配置
+type RandFieldList []*RandField
+
 func (list RandFieldList) RandResult(enums map[string][]string) map[string]string {
 	result := make(map[string]string)
 	for index, field := range list {
@@ -84,7 +64,7 @@ func (list RandFieldList) RandResult(enums map[string][]string) map[string]strin
 		if field.Default == "" {
 			var randModel = &randx.Options{
 				Type:    field.Type,
-				Args:    randx.NewArgs(field.Args),
+				Param:   randx.NewParam(field.Args),
 				Default: field.Default,
 				Offset:  index,
 				Enums:   enums[field.Name],

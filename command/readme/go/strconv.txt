@@ -1,0 +1,7 @@
+value, _ := strconv.Atoi(str)                   // string到int
+value, _ := strconv.ParseInt(str, 10, 64)       // string到int64
+value, _ := strconv.ParseFloat(str, 64)         // string转float64
+
+str = strconv.Itoa(value)                       // int到string
+str = strconv.FormatInt(value,10)               // int64到string
+str = strconv.FormatFloat(value, 'f', -1, 64)   // float64转string

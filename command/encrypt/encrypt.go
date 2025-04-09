@@ -30,7 +30,7 @@ func init() {
 	Command.AddOption(
 		flagx.StringOption("formula", "加密公式", ""),
 		flagx.StringOption("variables", "加密变量", ""),
-		flagx.BoolOption("copy", "复制粘贴", false),
+		flagx.BoolOption("copy", "复制结果值", false),
 	).SetExecutor(executor)
 
 	CryptoFunc.
@@ -94,7 +94,7 @@ func executor() error {
 		if err := utils.WriteToClipboard(result); err != nil {
 			return errorx.Wrap(err, "复制值到待粘贴失败")
 		}
-		fmtx.Magenta.XPrintf("当前值%s已复制到粘贴板\n", result)
+		fmtx.Magenta.Xprintf("当前值%s已复制到粘贴板\n", result)
 	}
 	return nil
 }

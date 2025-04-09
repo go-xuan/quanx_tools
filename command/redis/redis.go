@@ -29,11 +29,6 @@ func init() {
 }
 
 func executor() error {
-	key := Command.GetOptionValue("key").String()
-	if key == "" {
-		fmtx.Red.Println("key is empty")
-		return nil
-	}
 	redis := &redisx.Config{
 		Source:   "default",
 		Enable:   true,
@@ -48,17 +43,23 @@ func executor() error {
 		return errorx.Wrap(err, "初始化redis连接失败")
 	}
 
+	key := Command.GetOptionValue("key").String()
+	if key == "" {
+		fmtx.Red.Println("key is empty")
+		return nil
+	}
+
 	var ctx = context.TODO()
 	if Command.GetOptionValue("delete").Bool() {
-		redisx.GetClient().Del(ctx, key)
+		redisx.GetInstance().Del(ctx, key)
 	} else if Command.GetOptionValue("set").Bool() {
 		value := Command.GetOptionValue("value").String()
-		redisx.GetClient().Set(ctx, key, value, time.Minute)
+		redisx.GetInstance().Set(ctx, key, value, time.Minute)
 	} else if Command.GetOptionValue("get").Bool() {
-		value := redisx.GetClient().Get(ctx, key)
+		value := redisx.GetInstance().Get(ctx, key)
 		fmtx.Cyan.Printf("the value of %s is: %s", key, value)
 	}
-	if err := redisx.GetClient().Close(); err != nil {
+	if err := redisx.GetInstance().Close(); err != nil {
 		return errorx.Wrap(err, "关闭redis连接失败")
 	}
 	return nil

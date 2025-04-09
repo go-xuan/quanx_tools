@@ -59,9 +59,9 @@ func (t *TemplateFile) WriteDataToFile(root string, data any, model ...string) e
 			return errorx.Wrap(err, "写入文件失败"+filePath)
 		}
 		if writeMode == doOverwrite {
-			fmtx.Green.XPrintf("代码覆盖成功：%s \n", filePath)
+			fmtx.Green.Xprintf("代码覆盖成功：%s \n", filePath)
 		} else {
-			fmtx.Green.XPrintf("代码生成成功：%s \n", filePath)
+			fmtx.Green.Xprintf("代码生成成功：%s \n", filePath)
 		}
 	}
 	return nil

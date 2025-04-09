@@ -23,7 +23,7 @@ func init() {
 	Command = flagx.NewCommand(command.QrCode, "生成二维码",
 		flagx.StringOption("content", "二维码内容", ""),
 		flagx.IntOption("size", "二维码大小", 900),
-		flagx.BoolOption("copy", "复制粘贴", false),
+		flagx.BoolOption("copy", "复制结果值", false),
 	).SetExecutor(executor)
 }
 
@@ -54,7 +54,7 @@ func executor() error {
 		if err := utils.WriteToClipboard(path); err != nil {
 			return errorx.Wrap(err, "复制值二维码文件路径失败")
 		}
-		fmtx.Magenta.XPrintf("当前值%s已复制到粘贴板\n", path)
+		fmtx.Magenta.Xprintf("当前值%s已复制到粘贴板\n", path)
 	}
 	return nil
 }

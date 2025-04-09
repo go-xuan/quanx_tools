@@ -18,14 +18,17 @@ else
     echo "Error: 获取go.mod文件的module名失败"
   fi
   # 只取项目名
-  echo "当前项目：$module_name"
+  echo "当前项目名: $module_name"
   build_name=$(basename "$module_name")
 fi
+
+# 构建文件名
+echo "构建文件名: $build_name"
 
 # 检测操作系统和架构
 os_type=$(uname -s)
 arch_type=$(uname -m)
-echo "系统架构：$os_type/$arch_type"
+echo "系统和架构：$os_type/$arch_type"
 
 # 判断操作系统
 case $os_type in
@@ -79,7 +82,7 @@ sh -c "$go_build_cmd"
 # 检查构建是否成功
 # shellcheck disable=SC2181
 if [ $? == 0 ]; then
-    echo "构建成功：$build_name"
+    echo "构建成功: $build_name"
 else
     echo "构建失败！！！"
 fi
@@ -88,4 +91,4 @@ fi
 chmod +x "$build_name"
 bin_path=$GOPATH/bin/$build_name
 mv "$build_name" "$bin_path"
-echo "文件更新：$bin_path"
+echo "已将 $build_name 复制到bin目录： $bin_path"
