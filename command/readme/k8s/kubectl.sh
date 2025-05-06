@@ -8,6 +8,7 @@ kubectl get pod -o wide                                                       # 
 kubectl get pod -o yaml                                                       # 查看资源的yaml格式信息
 kubectl logs [pod_name]                                                       # 查看Pod所有日志
 kubectl logs [pod_name] -f --tail=100                                         # 查看pod最后100条日志
+kubectl logs -l app=[server_name] -f --tail=300                               # 查看标签为[server_name]的pod最后300条日志
 kubectl logs [pod_name] -f                                                    # 通过pod名称查看pod日志,-f表示实时查看
 kubectl logs [pod_name] -c [container_name]                                   # 查看pod中容器的日志
 kubectl patch deploy [server_name] -p '{"spec":{"replicas":1}}'               # 设置服务的副本数量为1

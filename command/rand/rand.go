@@ -150,7 +150,7 @@ func executor() error {
 		if data, err := dao.GetDBFieldDataList(param); err != nil {
 			return errorx.Wrap(err, "failed to query database table field data")
 		} else {
-			options.Enums = data
+			options.Param.Enums = data
 		}
 	}
 	if Command.GetOptionValue("copy").Bool() {

@@ -96,7 +96,8 @@ func executor() error {
 		return nil
 	}
 
-	enum, err := GetPwdEnumFromFS(path)
+	// 从FS获取所有账密
+	pwds, err := GetPwdEnumFromFS(path)
 	if err != nil {
 		return err
 	}
@@ -109,7 +110,7 @@ func executor() error {
 		marshal = marshalx.Yaml()
 	}
 
-	if pwd := enum.Get(Command.GetOptionValue("source").String()); pwd != nil {
+	if pwd := pwds.Get(Command.GetOptionValue("source").String()); pwd != nil {
 		if marshal != nil {
 			bytes, _ := marshal.Marshal(pwd)
 			fmt.Println(string(bytes))
@@ -118,11 +119,11 @@ func executor() error {
 		}
 	} else {
 		if marshal != nil {
-			bytes, _ := marshal.Marshal(enum.Values())
+			bytes, _ := marshal.Marshal(pwds.Values())
 			fmt.Println(string(bytes))
 		} else {
-			for _, k := range enum.Keys() {
-				fmt.Printf("%-30s %s\n", fmtx.Green.String(k), enum.Get(k).ToString())
+			for _, k := range pwds.Keys() {
+				fmt.Printf("%-30s %s\n", fmtx.Green.String(k), pwds.Get(k).ToString())
 			}
 		}
 	}

@@ -42,7 +42,7 @@ type RandField struct {
 	Name    string            `json:"name"`    // 字段名
 	Type    string            `json:"type"`    // 数据类型
 	Default string            `json:"default"` // 默认值
-	Args    map[string]string `json:"args"`    // 约束参数
+	Param   map[string]string `json:"param"`   // 约束参数
 }
 
 // RandField 将表字段结构体转为随机字段结构体
@@ -62,12 +62,13 @@ func (list RandFieldList) RandResult(enums map[string][]string) map[string]strin
 	for index, field := range list {
 		var value string
 		if field.Default == "" {
+			param := randx.NewParam(field.Param)
+			param.Enums = enums[field.Name]
 			var randModel = &randx.Options{
+				Param:   param,
 				Type:    field.Type,
-				Param:   randx.NewParam(field.Args),
 				Default: field.Default,
 				Offset:  index,
-				Enums:   enums[field.Name],
 			}
 			value = randModel.NewString()
 		} else {
