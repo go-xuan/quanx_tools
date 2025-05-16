@@ -6,6 +6,6 @@ import (
 )
 
 func TestEncrypt(t *testing.T) {
-	fmt.Println(doCrypto("base64(hello)"))
-	fmt.Println(doCrypto("md5(base64(hello))"))
+	fmt.Println(doEncrypt("base64(hello)"))
+	fmt.Println(doEncrypt("md5(base64(hello))"))
 }

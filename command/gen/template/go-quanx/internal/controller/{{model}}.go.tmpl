@@ -16,7 +16,7 @@ func {{uc .Name}}DemoHandler(ctx *gin.Context) {
 		return
 	}
 	if result, err := logic.{{uc .Name}}Demo(ctx, req); err != nil {
-        respx.Error(ctx, err)
+        respx.Error(ctx, err.Error())
     } else {
 	    respx.Success(ctx, result)
     }

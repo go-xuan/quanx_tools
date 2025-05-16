@@ -1,7 +1,11 @@
 package encrypt
 
 import (
+	"crypto/md5"
+	"crypto/sha1"
+	"crypto/sha256"
 	"fmt"
+	"github.com/go-xuan/quanx/base/encodingx"
 	"strings"
 	"time"
 
@@ -11,7 +15,6 @@ import (
 	"github.com/go-xuan/quanx/types/anyx"
 	"github.com/go-xuan/quanx/types/enumx"
 	"github.com/go-xuan/quanx/types/stringx"
-	"github.com/go-xuan/quanx/utils/cryptx"
 	"github.com/go-xuan/quanx/utils/randx"
 
 	"quanx_tools/command"
@@ -87,7 +90,7 @@ func executor() error {
 	}
 	formula = strings.NewReplacer(oldnew...).Replace(formula)
 	fmt.Println("实际加密公式: ", formula)
-	var result = doCrypto(formula)
+	var result = doEncrypt(formula)
 	fmt.Println("加密结果: ", fmtx.Magenta.String(result))
 	// 开启复制
 	if Command.GetOptionValue("copy").Bool() {
@@ -99,11 +102,11 @@ func executor() error {
 	return nil
 }
 
-// doCrypto 执行加密
-func doCrypto(formula string) string {
+// doEncrypt 执行加密
+func doEncrypt(formula string) string {
 	if funcName, start, end := getEncryptFuncAndIndex(formula); start > 0 {
 		text := formula[start+1 : end]
-		text = doCrypto(text)
+		text = doEncrypt(text)
 		switch funcName {
 		case "upper":
 			text = stringx.ToUpperCamel(text)
@@ -112,9 +115,13 @@ func doCrypto(formula string) string {
 		case "reverse":
 			text = stringx.Reverse(text)
 		case "md5":
-			text = cryptx.MD5(text)
+			text = encodingx.Hash(md5.New()).Encode([]byte(text))
+		case "sha1":
+			text = encodingx.Hash(sha1.New()).Encode([]byte(text))
+		case "sha256":
+			text = encodingx.Hash(sha256.New()).Encode([]byte(text))
 		case "base64":
-			text = cryptx.Base64Encode([]byte(text), true)
+			text = encodingx.Base64(true).Encode([]byte(text))
 		}
 		start -= len(funcName)
 		return formula[:start] + text + formula[end+1:]

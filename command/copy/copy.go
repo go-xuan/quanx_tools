@@ -33,17 +33,17 @@ type Value struct {
 	Time    time.Time `json:"time"`
 }
 
-func (v *Value) Marshal() string {
-	b, _ := json.Marshal(v)
-	return string(b)
-}
-
 func (v *Value) Unmarshal(j string) {
 	_ = json.Unmarshal([]byte(j), v)
 }
 
 func (v *Value) Save(path string) error {
-	return filex.WriteFileString(path, v.Marshal()+"\n", filex.Append)
+	data, err := json.Marshal(v)
+	if err != nil {
+		return errorx.Wrap(err, "value marshal error")
+	}
+	data = append(data, []byte("\n")...)
+	return filex.WriteFile(path, data, filex.Append)
 }
 
 func init() {
