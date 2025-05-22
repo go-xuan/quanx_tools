@@ -22,23 +22,24 @@ var (
 )
 
 func init() {
+	// 读取所有的readme文件
 	_ = fs.WalkDir(FS, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 		if !d.IsDir() && filex.GetSuffix(path) != "go" {
-			group, name, _ := filex.Analyse(path)
-			group = strings.Trim(group, "/")
-			var data *enumx.Enum[string, []byte]
-			if data = allData.Get(group); data == nil {
-				data = enumx.NewStringEnum[[]byte]()
-			}
+			dir, filename, _ := filex.Analyse(path)
+			dir = strings.Trim(dir, "/")
 			var content []byte
 			if content, err = FS.ReadFile(path); err != nil {
 				return err
 			}
-			data.Add(name, content)
-			allData.Add(group, data)
+			var data *enumx.Enum[string, []byte]
+			if data = allData.Get(dir); data == nil {
+				data = enumx.NewStringEnum[[]byte]()
+			}
+			data.Add(filename, content)
+			allData.Add(dir, data)
 		}
 		return nil
 	})

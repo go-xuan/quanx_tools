@@ -17,10 +17,10 @@ import (
 	"quanx_tools/common/utils"
 )
 
-var Command *flagx.Command
+var Command = flagx.NewCommand(command.QrCode, "生成二维码")
 
 func init() {
-	Command = flagx.NewCommand(command.QrCode, "生成二维码",
+	Command.AddOption(
 		flagx.StringOption("content", "二维码内容", ""),
 		flagx.IntOption("size", "二维码大小", 900),
 		flagx.BoolOption("copy", "复制结果值", false),

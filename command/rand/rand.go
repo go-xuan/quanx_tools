@@ -6,10 +6,10 @@ import (
 	"github.com/go-xuan/quanx/base/fmtx"
 	"github.com/go-xuan/quanx/types/enumx"
 	"github.com/go-xuan/quanx/utils/randx"
+	"quanx_tools/common/database"
 
 	"quanx_tools/command"
 	"quanx_tools/common"
-	"quanx_tools/common/dao"
 	"quanx_tools/common/enums"
 	"quanx_tools/common/utils"
 )
@@ -147,7 +147,7 @@ func executor() error {
 		Param:   randx.NewParam(param),
 	}
 	if options.Type == common.Database {
-		if data, err := dao.GetDBFieldDataList(param); err != nil {
+		if data, err := database.GetColumnValues(param); err != nil {
 			return errorx.Wrap(err, "failed to query database table field data")
 		} else {
 			options.Param.Enums = data

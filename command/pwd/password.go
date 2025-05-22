@@ -4,7 +4,9 @@ import (
 	"embed"
 	"fmt"
 	"io/fs"
+	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/go-xuan/quanx/base/filex"
 	"github.com/go-xuan/quanx/base/flagx"
@@ -14,6 +16,7 @@ import (
 	"github.com/go-xuan/quanx/utils/marshalx"
 
 	"quanx_tools/command"
+	"quanx_tools/common/table"
 )
 
 //go:embed *
@@ -21,18 +24,8 @@ var FS embed.FS
 
 var (
 	Command = flagx.NewCommand(command.Password, "密码")
-	names   = enumx.NewEnum[string, string]()
+	data    = enumx.NewEnum[string, []*Password]()
 )
-
-type Password struct {
-	Source   string `yaml:"source" json:"source"`     // 数据源
-	Type     string `yaml:"type" json:"type"`         // 数据库类型
-	Host     string `yaml:"host" json:"host"`         // host
-	Port     int    `yaml:"port" json:"port"`         // 端口
-	Database string `yaml:"database" json:"database"` // 数据库
-	Username string `yaml:"username" json:"username"` // 用户名
-	Password string `yaml:"password" json:"password"` // 密码
-}
 
 func (p *Password) ToString() string {
 	return fmtx.Yellow.Xsprintf(
@@ -56,77 +49,95 @@ func init() {
 			return err
 		}
 		if !d.IsDir() && filex.GetSuffix(path) != "go" {
-			_, name, _ := filex.Analyse(path)
-			Command.AddOption(flagx.BoolOption(name, fmt.Sprintf("获取%s密码", name), false))
-			names.Add(name, path)
+			var content []byte
+			if content, err = FS.ReadFile(path); err != nil {
+				return err
+			}
+			var pwds []*Password
+			if err = marshalx.Apply(path).Unmarshal(content, &pwds); err != nil {
+				return err
+			}
+			_, filename, _ := filex.Analyse(path)
+			data.Add(filename, pwds)
+			Command.AddOption(flagx.BoolOption(filename, fmt.Sprintf("获取%s密码", filename), false))
 		}
 		return nil
 	})
 
-	Command.AddOption(flagx.StringOption("source", "选择数据源", ""))
+	Command.AddOption(flagx.StringOption("keyword", "检索关键字", ""))
 	Command.SetExecutor(executor)
 }
 
-func GetPwdEnumFromFS(path string) (*enumx.Enum[string, *Password], error) {
-	content, err := FS.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	var pwds []*Password
-	if err = marshalx.Apply(path).Unmarshal(content, &pwds); err != nil {
-		return nil, err
-	}
-
-	var enum = enumx.NewEnum[string, *Password]()
-	for _, pwd := range pwds {
-		enum.Add(pwd.Source, pwd)
-	}
-	return enum, nil
-}
-
 func executor() error {
-	var path string
-	for _, name := range names.Keys() {
+	var pwds []*Password
+	for _, name := range data.Keys() {
 		if Command.GetOptionValue(name).Bool() {
-			path = names.Get(name)
+			pwds = data.Get(name)
 		}
 	}
-	if path == "" {
+	if pwds == nil || len(pwds) == 0 {
 		Command.OptionsHelp()
 		return nil
 	}
 
-	// 从FS获取所有账密
-	pwds, err := GetPwdEnumFromFS(path)
-	if err != nil {
-		return err
-	}
-
-	// 序列化方式
-	var marshal marshalx.Method
-	if Command.GetOptionValue("json").Bool() {
-		marshal = marshalx.Json("    ")
-	} else if Command.GetOptionValue("yaml").Bool() {
-		marshal = marshalx.Yaml()
-	}
-
-	if pwd := pwds.Get(Command.GetOptionValue("source").String()); pwd != nil {
-		if marshal != nil {
-			bytes, _ := marshal.Marshal(pwd)
-			fmt.Println(string(bytes))
-		} else {
-			fmt.Println(pwd.ToString())
-		}
-	} else {
-		if marshal != nil {
-			bytes, _ := marshal.Marshal(pwds.Values())
-			fmt.Println(string(bytes))
-		} else {
-			for _, k := range pwds.Keys() {
-				fmt.Printf("%-30s %s\n", fmtx.Green.String(k), pwds.Get(k).ToString())
+	// 获取指定数据源
+	var output []*Password
+	if keyword := Command.GetOptionValue("keyword").String(); keyword != "" {
+		for _, pwd := range pwds {
+			if strings.Contains(pwd.Source, keyword) || strings.Contains(pwd.Database, "keyword") {
+				output = append(output, pwd)
 			}
 		}
+	} else {
+		output = pwds
 	}
 
+	// 输出结果
+	if Command.GetOptionValue("json").Bool() {
+		bytes, _ := marshalx.Json("    ").Marshal(output)
+		fmt.Println(string(bytes))
+	} else if Command.GetOptionValue("yaml").Bool() {
+		bytes, _ := marshalx.Yaml().Marshal(output)
+		fmt.Println(string(bytes))
+	} else {
+		table.Print(output)
+	}
 	return nil
+}
+
+type Password struct {
+	Source   string `yaml:"source" json:"source" column:"source"`       // 数据源
+	Type     string `yaml:"type" json:"type"`                           // 数据库类型
+	Host     string `yaml:"host" json:"host" column:"host"`             // host
+	Port     int    `yaml:"port" json:"port" column:"port"`             // 端口
+	Database string `yaml:"database" json:"database" column:"database"` // 数据库
+	Username string `yaml:"username" json:"username" column:"username"` // 用户名
+	Password string `yaml:"password" json:"password" column:"password"` // 密码
+}
+
+func (p *Password) GetHeaders() []string {
+	valueOf := reflect.ValueOf(p).Elem()
+	typeOf := valueOf.Type()
+	var names []string
+	for i := 0; i < typeOf.NumField(); i++ {
+		if name, ok := typeOf.Field(i).Tag.Lookup("column"); ok {
+			names = append(names, name)
+		}
+	}
+	return names
+}
+
+func (p *Password) GetValuesAndWides() ([]string, []int) {
+	valueOf := reflect.ValueOf(p).Elem()
+	typeOf := valueOf.Type()
+	var values []string
+	var wides []int
+	for i := 0; i < typeOf.NumField(); i++ {
+		if _, ok := typeOf.Field(i).Tag.Lookup("column"); ok {
+			value := fmt.Sprintf("%v", valueOf.Field(i).Interface())
+			values = append(values, value)
+			wides = append(wides, len(value))
+		}
+	}
+	return values, wides
 }

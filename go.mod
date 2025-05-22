@@ -10,6 +10,7 @@ require (
 	github.com/go-xuan/quanx v1.25.11
 	github.com/go-xuan/sqlx v0.0.4
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
+	gorm.io/gorm v1.26.0
 )
 
 require (
@@ -48,5 +49,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/mysql v1.5.7 // indirect
 	gorm.io/driver/postgres v1.4.7 // indirect
-	gorm.io/gorm v1.26.0 // indirect
 )

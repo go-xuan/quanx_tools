@@ -14,10 +14,10 @@ import (
 	"quanx_tools/common/utils"
 )
 
-var Command *flagx.Command
+var Command = flagx.NewCommand(command.SqlFmt, "SQL格式化工具")
 
 func init() {
-	Command = flagx.NewCommand(command.SqlFmt, "SQL格式化工具",
+	Command.AddOption(
 		flagx.StringOption("path", "SQL文件路径", ""),
 		flagx.BoolOption("copy", "复制结果值", false),
 	).SetExecutor(executor)

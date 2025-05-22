@@ -5,10 +5,10 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"fmt"
-	"github.com/go-xuan/quanx/base/encodingx"
 	"strings"
 	"time"
 
+	"github.com/go-xuan/quanx/base/encodingx"
 	"github.com/go-xuan/quanx/base/errorx"
 	"github.com/go-xuan/quanx/base/flagx"
 	"github.com/go-xuan/quanx/base/fmtx"
@@ -41,6 +41,8 @@ func init() {
 		Add("lower", `转小写，例如：-formula=upper(ABC)，将字符串“ABC”转为小写“abc”`).
 		Add("reverse", `反转字符串，例如：-formula=reverse(abc)，将字符串“abc”转为“cba”`).
 		Add("md5", `md5加密，例如：-formula=md5(abc)，将字符串“abc”进行md5加密`).
+		Add("sha1", `sha1加密，例如：-formula=sha1(abc)，将字符串“abc”进行sha1加密`).
+		Add("sha256", `sha1加密，例如：-formula=sha256(abc)，将字符串“abc”进行sha256加密`).
 		Add("base64", `base64加密，例如：-formula=base64(abc)，将字符串“abc”进行base64加密`).
 		Add("...", "扩展中，敬请期待...")
 
@@ -134,7 +136,7 @@ func getEncryptFuncAndIndex(formula string) (string, int, int) {
 	if start, end := stringx.Between(formula, "(", ")"); start < 0 || end < 0 {
 		return "", 0, 0
 	} else {
-		funcName, _ := stringx.Contains(formula[:start], "md5", "upper", "lower", "base64", "reverse")
-		return funcName, start, end
+		name, _ := stringx.Contains(formula[:start], "md5", "sha1", "upper", "lower", "sha256", "base64", "reverse")
+		return name, start, end
 	}
 }

@@ -33,10 +33,6 @@ type Value struct {
 	Time    time.Time `json:"time"`
 }
 
-func (v *Value) Unmarshal(j string) {
-	_ = json.Unmarshal([]byte(j), v)
-}
-
 func (v *Value) Save(path string) error {
 	data, err := json.Marshal(v)
 	if err != nil {
@@ -66,7 +62,7 @@ func init() {
 	} else {
 		for _, line := range lines {
 			value := &Value{}
-			value.Unmarshal(line)
+			_ = json.Unmarshal([]byte(line), value)
 			values.Add(value.NO, value)
 		}
 	}

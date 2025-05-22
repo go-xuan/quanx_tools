@@ -11,10 +11,10 @@ import (
 	"quanx_tools/command"
 )
 
-var Command *flagx.Command
+var Command = flagx.NewCommand(command.Restic, "restic工具")
 
 func init() {
-	Command = flagx.NewCommand(command.Restic, "restic工具",
+	Command.AddOption(
 		flagx.StringOption("config", "配置文件", "restic.yaml"),
 		flagx.BoolOption("init", "初始化存储库", false),
 		flagx.BoolOption("snapshots", "查询快照", false),
